@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOFIH LOCAL TRAINING</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --navy:#0A1628; --navy-mid:#112240; --navy-light:#1A3560;
+  --blue:#1E5FA8; --blue-bright:#2D7DD2; --accent:#4FC3F7;
+  --gold:#F4A522; --slate:#64748B; --slate-light:#94A3B8;
+  --surface:#EFF4FB; --border:rgba(30,95,168,.15);
+  --shadow:0 4px 24px rgba(10,22,40,.10);
+  --shadow-lg:0 12px 48px rgba(10,22,40,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--navy);min-height:100vh;overflow-x:hidden;}
+
+/* ── HEADER ── */
+header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--navy-light) 100%);position:sticky;top:0;z-index:300;box-shadow:0 2px 20px rgba(10,22,40,.4);}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;border-bottom:1px solid rgba(79,195,247,.15);gap:12px;}
+.logo-area{display:flex;align-items:center;gap:12px;}
+.logo-emblem{width:44px;height:44px;background:linear-gradient(135deg,var(--blue-bright),var(--accent));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:white;box-shadow:0 4px 12px rgba(45,125,210,.4);flex-shrink:0;}
+.title-block h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(13px,2.2vw,20px);color:#fff;letter-spacing:2px;line-height:1.1;}
+.title-block span{font-size:10px;color:var(--accent);letter-spacing:1.5px;font-weight:400;text-transform:uppercase;}
+.header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.header-badge{display:flex;align-items:center;gap:7px;background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.2);padding:5px 12px;border-radius:20px;font-size:11px;color:var(--accent);font-weight:500;}
+.badge-dot{width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+
+/* Admin button — shown always but gating is via password */
+.admin-btn{background:rgba(244,165,34,.15);border:1px solid rgba(244,165,34,.3);color:var(--gold);font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.admin-btn:hover{background:rgba(244,165,34,.25);}
+.admin-btn.active-session{background:rgba(244,165,34,.3);border-color:var(--gold);}
+.admin-mode-strip{display:none;background:linear-gradient(90deg,#7c1d1d,#991b1b);padding:6px 22px;font-size:11px;color:#fca5a5;font-weight:600;letter-spacing:.5px;align-items:center;justify-content:space-between;}
+.admin-mode-strip.show{display:flex;}
+.admin-mode-strip button{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+nav{display:flex;padding:0 16px;overflow-x:auto;scrollbar-width:none;}
+nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;color:var(--slate-light);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:12px 16px;cursor:pointer;white-space:nowrap;position:relative;transition:color .25s;}
+.nav-btn::after{content:'';position:absolute;bottom:0;left:16px;right:16px;height:2px;background:var(--accent);border-radius:2px 2px 0 0;transform:scaleX(0);transition:transform .25s;}
+.nav-btn:hover{color:#fff;}
+.nav-btn.active{color:var(--accent);}
+.nav-btn.active::after{transform:scaleX(1);}
+
+/* ── PASSWORD MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,.75);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.show{display:flex;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:linear-gradient(160deg,#0f1e35,#1a3560);border:1px solid rgba(79,195,247,.2);border-radius:20px;padding:36px;width:min(420px,92vw);text-align:center;box-shadow:0 24px 60px rgba(10,22,40,.5);animation:slideUp .3s ease;}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-lock{font-size:48px;margin-bottom:16px;}
+.modal-box h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:white;margin-bottom:6px;}
+.modal-box p{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:24px;line-height:1.5;}
+.modal-pw-wrap{position:relative;margin-bottom:14px;}
+.modal-pw-wrap input{width:100%;padding:13px 48px 13px 16px;border:2px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.07);color:white;font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color .2s;letter-spacing:2px;text-align:center;}
+.modal-pw-wrap input:focus{border-color:rgba(79,195,247,.5);}
+.modal-pw-wrap input::placeholder{letter-spacing:0;color:rgba(255,255,255,.3);}
+.modal-pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:16px;}
+.modal-error{font-size:12px;color:#f87171;margin-bottom:12px;min-height:18px;}
+.modal-enter-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#e8950f);color:white;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.modal-enter-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(244,165,34,.4);}
+.modal-cancel{display:block;margin-top:12px;font-size:12px;color:rgba(255,255,255,.35);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;width:100%;}
+.modal-cancel:hover{color:rgba(255,255,255,.6);}
+
+/* ── ADMIN DRAWER ── */
+.admin-drawer{display:none;background:linear-gradient(160deg,#0d1b2e,#152742);border-bottom:2px solid rgba(244,165,34,.3);}
+.admin-drawer.open{display:block;animation:fadeUp .3s ease;}
+.admin-drawer-inner{max-width:1280px;margin:0 auto;padding:22px 22px;}
+.admin-drawer h3{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--gold);margin-bottom:16px;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.admin-tabs-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.adm-tab{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.adm-tab:hover{background:rgba(255,255,255,.1);color:white;}
+.adm-tab.active{background:rgba(244,165,34,.2);border-color:rgba(244,165,34,.4);color:var(--gold);}
+.adm-section{display:none;}
+.adm-section.active{display:block;animation:fadeUp .25s ease;}
+
+/* Admin fields */
+.adm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;}
+.adm-field{display:flex;flex-direction:column;gap:5px;}
+.adm-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--slate-light);}
+.adm-field input,.adm-field textarea,.adm-field select{padding:9px 13px;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(255,255,255,.07);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s;resize:vertical;}
+.adm-field input:focus,.adm-field textarea:focus,.adm-field select:focus{border-color:rgba(244,165,34,.5);background:rgba(255,255,255,.1);}
+.adm-field input::placeholder,.adm-field textarea::placeholder{color:rgba(255,255,255,.25);}
+.adm-field select option{background:#1a2d4a;color:white;}
+.adm-row-actions{display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap;}
+.adm-save-btn{background:linear-gradient(135deg,var(--gold),#e8950f);color:white;border:none;padding:10px 22px;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.adm-save-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(244,165,34,.4);}
+
+/* ── Image upload in admin ── */
+.img-upload-row{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.img-upload-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(79,195,247,.12);border:1.5px dashed rgba(79,195,247,.4);color:var(--accent);font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.img-upload-btn:hover{background:rgba(79,195,247,.2);border-color:var(--accent);}
+.img-upload-btn input[type=file]{display:none;}
+.img-preview{width:60px;height:60px;border-radius:8px;object-fit:cover;border:1.5px solid rgba(255,255,255,.15);}
+.img-preview-placeholder{width:60px;height:60px;border-radius:8px;background:rgba(255,255,255,.06);border:1.5px dashed rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.img-clear-btn{font-size:10px;color:#f87171;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);padding:4px 9px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;}
+.adm-add-btn{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:#4ade80;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.adm-add-btn:hover{background:rgba(74,222,128,.25);}
+.adm-del-btn{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:7px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.adm-note{font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;margin-top:10px;}
+
+/* Editable list items in admin */
+.adm-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.adm-list-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;}
+.adm-list-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.adm-list-item-header span{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);}
+.adm-topic-row{display:grid;grid-template-columns:80px 1fr 1fr;gap:8px;align-items:center;}
+@media(max-width:600px){.adm-topic-row{grid-template-columns:1fr;}}
+
+/* ── MAIN ── */
+main{max-width:1280px;margin:0 auto;padding:24px 18px 60px;}
+.page{display:none;}
+.page.active{display:block;animation:fadeUp .35s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SUBTABS ── */
+.subtab-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.subtab-btn{background:white;border:1.5px solid var(--border);color:var(--slate);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all .2s;}
+.subtab-btn:hover{border-color:var(--blue);color:var(--blue);}
+.subtab-btn.active{background:var(--blue);border-color:var(--blue);color:white;box-shadow:0 3px 10px rgba(30,95,168,.25);}
+.subpage{display:none;}
+.subpage.active{display:block;animation:fadeUp .3s ease;}
+
+/* ── SECTION HEADER ── */
+.section-header{margin-bottom:22px;}
+.section-header h2{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(18px,3vw,26px);color:var(--navy);}
+.section-header p{color:var(--slate);font-size:13px;margin-top:3px;font-weight:300;}
+.section-line{width:44px;height:3px;background:linear-gradient(90deg,var(--blue),var(--accent));border-radius:2px;margin-top:8px;}
+
+/* ── HERO ── */
+.hero-banner{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 60%,rgba(30,95,168,.8) 100%);border-radius:18px;padding:30px 34px;margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.hero-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;background:radial-gradient(circle,rgba(79,195,247,.15) 0%,transparent 70%);border-radius:50%;}
+.hero-text{position:relative;}
+.hero-text .tag{display:inline-block;background:rgba(79,195,247,.15);border:1px solid rgba(79,195,247,.3);color:var(--accent);font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:10px;}
+.hero-text h2{font-family:'Syne',sans-serif;font-size:clamp(20px,3.5vw,32px);font-weight:800;color:white;line-height:1.1;margin-bottom:8px;}
+.hero-text p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;max-width:440px;}
+.hero-stats{display:flex;gap:22px;position:relative;flex-shrink:0;}
+.hs-item{text-align:center;}
+.hs-item .hs-num{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1;background:linear-gradient(135deg,white,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hs-item .hs-label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:26px;}
+.stat-card{background:white;border-radius:14px;padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--ac,var(--blue));border-radius:4px 0 0 4px;}
+.stat-card .label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--slate);margin-bottom:6px;}
+.stat-card .value{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--navy);line-height:1;}
+.stat-card .sub{font-size:11px;color:var(--slate-light);margin-top:3px;}
+
+/* ── CHARTS ── */
+.charts-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-bottom:22px;}
+.chart-card{background:white;border-radius:14px;padding:22px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.chart-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.chart-card p{font-size:11px;color:var(--slate);margin-bottom:16px;}
+.chart-wrap{position:relative;height:210px;}
+
+/* ── NEWS ── */
+.news-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+.news-card{background:white;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;}
+.news-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.news-card-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.news-card-body{padding:16px;}
+.news-tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 9px;border-radius:20px;margin-bottom:6px;}
+.news-card-body h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px;line-height:1.4;}
+.news-card-body p{font-size:12px;color:var(--slate);line-height:1.6;}
+.news-date{font-size:10px;color:var(--slate-light);margin-top:8px;}
+
+/* ── OUTLINE ── */
+.outline-timeline{position:relative;padding-left:30px;}
+.outline-timeline::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--blue),var(--accent));border-radius:2px;}
+.outline-item{position:relative;background:white;border-radius:12px;padding:16px 18px;margin-bottom:12px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.outline-item::before{content:'';position:absolute;left:-24px;top:20px;width:11px;height:11px;background:var(--blue);border-radius:50%;border:2px solid white;box-shadow:0 0 0 3px var(--blue);}
+.outline-item .day-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);margin-bottom:3px;}
+.outline-item h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.outline-item p{font-size:12px;color:var(--slate);line-height:1.5;}
+
+/* ── PRESENTATIONS ── */
+.presentations-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:14px;}
+.topic-card{background:white;border-radius:16px;padding:22px 16px;border:1px solid var(--border);box-shadow:var(--shadow);text-align:center;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.topic-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--navy),var(--blue-bright));opacity:0;transition:opacity .25s;}
+.topic-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.topic-card:hover::before{opacity:1;}
+.topic-card:hover .topic-icon{background:rgba(255,255,255,.2);}
+.topic-card:hover .topic-num,.topic-card:hover h4,.topic-card:hover p,.topic-card:hover .topic-link-icon{color:white;}
+.topic-icon{width:54px;height:54px;background:linear-gradient(135deg,rgba(30,95,168,.1),rgba(45,125,210,.15));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px;transition:all .25s;position:relative;}
+.topic-num{font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;position:relative;transition:color .25s;}
+.topic-card h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--navy);line-height:1.4;position:relative;transition:color .25s;}
+.topic-card p{font-size:11px;color:var(--slate);margin-top:4px;position:relative;transition:color .25s;}
+.topic-link-icon{font-size:13px;margin-top:10px;position:relative;color:var(--slate-light);transition:color .25s;}
+.no-link-badge{display:inline-block;font-size:10px;background:rgba(100,116,139,.1);color:var(--slate);padding:2px 8px;border-radius:10px;margin-top:8px;position:relative;}
+
+/* ── ASSESSMENT FORMS ── */
+.assessment-forms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-bottom:24px;}
+.aform-card{background:white;border-radius:16px;padding:22px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;}
+.aform-header{display:flex;align-items:center;gap:13px;}
+.aform-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.aform-header h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);line-height:1.3;}
+.aform-header p{font-size:12px;color:var(--slate);margin-top:2px;}
+.aform-btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;border:none;justify-content:center;}
+.aform-btn.primary{background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;box-shadow:0 3px 12px rgba(30,95,168,.3);}
+.aform-btn.primary:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(30,95,168,.4);}
+.no-link-notice{font-size:11px;color:var(--slate-light);text-align:center;padding:8px;background:var(--surface);border-radius:8px;}
+
+/* ── PARTICIPANT LOOKUP ── */
+.lookup-wrapper{max-width:560px;margin:0 auto;}
+.lookup-card{background:white;border-radius:20px;padding:32px;border:1px solid var(--border);box-shadow:var(--shadow-lg);text-align:center;}
+.lookup-icon-wrap{width:66px;height:66px;background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;box-shadow:0 8px 22px rgba(10,22,40,.2);}
+.lookup-card h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:5px;}
+.lookup-card>p{font-size:13px;color:var(--slate);margin-bottom:22px;line-height:1.5;}
+.lookup-input-row{display:flex;gap:10px;margin-bottom:10px;}
+.lookup-input-row input{flex:1;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--navy);background:var(--surface);outline:none;transition:all .2s;}
+.lookup-input-row input:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 4px rgba(30,95,168,.08);}
+.lookup-hint{font-size:11px;color:var(--slate-light);}
+.error-msg{display:none;padding:12px 16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:10px;color:#dc2626;font-size:13px;margin-top:12px;}
+.loading-msg{display:none;padding:12px 16px;background:rgba(30,95,168,.06);border:1px solid rgba(30,95,168,.15);border-radius:10px;color:var(--blue);font-size:13px;margin-top:12px;}
+.result-card{display:none;margin-top:22px;text-align:left;animation:fadeUp .4s ease;}
+.result-header{background:linear-gradient(135deg,var(--navy),var(--navy-light));border-radius:14px 14px 0 0;padding:18px 22px;display:flex;align-items:center;gap:14px;}
+.result-avatar{width:46px;height:46px;background:linear-gradient(135deg,var(--blue-bright),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white;flex-shrink:0;}
+.result-name-block h4{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:white;}
+.result-name-block span{font-size:12px;color:var(--accent);}
+.result-body{background:white;border-radius:0 0 14px 14px;border:1px solid var(--border);border-top:none;overflow:hidden;}
+.result-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--slate);padding:10px 22px 6px;background:var(--surface);border-bottom:1px solid var(--border);}
+.result-row{display:flex;align-items:center;padding:11px 22px;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;}
+.result-row:last-child{border-bottom:none;}
+.rr-icon{font-size:16px;width:26px;text-align:center;flex-shrink:0;}
+.rr-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--slate);width:170px;flex-shrink:0;}
+.rr-value{font-size:13px;font-weight:500;color:var(--navy);flex:1;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.status-pill.completed{background:rgba(74,222,128,.12);color:#16a34a;}
+.status-pill.pending{background:rgba(251,191,36,.12);color:#d97706;}
+.status-pill.not-started{background:rgba(100,116,139,.1);color:var(--slate);}
+.status-dot{width:6px;height:6px;border-radius:50%;}
+.status-dot.completed{background:#4ade80;}
+.status-dot.pending{background:#fbbf24;}
+.status-dot.not-started{background:#94a3b8;}
+.score-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:800;}
+.pass-badge{background:rgba(74,222,128,.15);color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.fail-badge{background:rgba(239,68,68,.1);color:#dc2626;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+
+/* ── OTHERS ── */
+.announcement-list{display:flex;flex-direction:column;gap:12px;}
+.announcement-item{background:white;border-radius:12px;padding:15px 18px;border:1px solid var(--border);box-shadow:var(--shadow);border-left:4px solid var(--blue);display:flex;gap:12px;align-items:flex-start;}
+.ann-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.ann-body h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.ann-body p{font-size:12px;color:var(--slate);line-height:1.5;}
+.ann-meta{font-size:10px;color:var(--slate-light);margin-top:5px;}
+.quiz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:14px;}
+.quiz-card{background:white;border-radius:14px;padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);transition:all .2s;}
+.quiz-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--blue);}
+.quiz-header{display:flex;align-items:center;gap:11px;margin-bottom:10px;}
+.quiz-icon{width:40px;height:40px;background:linear-gradient(135deg,rgba(30,95,168,.1),rgba(79,195,247,.15));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;}
+.quiz-card h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--navy);line-height:1.3;}
+.quiz-meta{display:flex;gap:12px;font-size:11px;color:var(--slate);margin-bottom:10px;}
+.quiz-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.quiz-badge.open{background:rgba(74,222,128,.12);color:#16a34a;}
+.quiz-badge.closed{background:rgba(100,116,139,.1);color:var(--slate);}
+.quiz-badge.upcoming{background:rgba(251,191,36,.12);color:#d97706;}
+.events-list{display:flex;flex-direction:column;gap:12px;}
+/* ── DONUT ROW ── */
+.donut-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.donut-card{background:white;border-radius:14px;padding:18px 14px;border:1px solid var(--border);box-shadow:var(--shadow);text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.donut-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--navy);line-height:1.3;min-height:30px;display:flex;align-items:center;justify-content:center;}
+.donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0;}
+.donut-wrap canvas{width:110px!important;height:110px!important;}
+.donut-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--navy);pointer-events:none;}
+.donut-meta{font-size:11px;color:var(--slate);font-weight:500;}
+@media(max-width:640px){.donut-row{grid-template-columns:repeat(2,1fr);}.donut-wrap{width:90px;height:90px;}.donut-wrap canvas{width:90px!important;height:90px!important;}.donut-center{font-size:15px;}}
+.event-item{background:white;border-radius:12px;padding:15px 20px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;gap:15px;align-items:flex-start;}
+.event-date-block{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:10px;padding:9px 12px;text-align:center;flex-shrink:0;color:white;min-width:52px;}
+.ed-day{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1;}
+.ed-month{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-top:2px;}
+.event-body h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.event-body p{font-size:12px;color:var(--slate);line-height:1.5;}
+.event-meta{font-size:10px;color:var(--slate-light);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap;}
+
+/* Setup guide */
+.setup-guide{background:white;border-radius:16px;padding:26px;border:1px solid var(--border);box-shadow:var(--shadow);max-width:820px;margin-bottom:24px;}
+.setup-guide h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.setup-step{display:flex;gap:13px;margin-bottom:14px;padding:13px;background:var(--surface);border-radius:10px;border:1px solid var(--border);}
+.step-num{width:26px;height:26px;background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;flex-shrink:0;}
+.step-content h4{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.step-content p{font-size:12px;color:var(--slate);line-height:1.6;}
+.step-content code{background:rgba(30,95,168,.08);color:var(--blue);padding:1px 6px;border-radius:4px;font-size:11px;font-family:monospace;}
+
+/* Buttons */
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;border:none;padding:12px 26px;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(30,95,168,.3);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(30,95,168,.4);}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(30,95,168,.2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── FACILITATOR PASSWORD MODAL ── */
+.fac-modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,.8);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+.fac-modal-overlay.show{display:flex;animation:fadeIn .25s ease;}
+.fac-modal-box{background:linear-gradient(160deg,#0f2518,#1a4530);border:1px solid rgba(74,222,128,.2);border-radius:20px;padding:36px;width:min(400px,92vw);text-align:center;box-shadow:0 24px 60px rgba(10,22,40,.6);animation:slideUp .3s ease;}
+.fac-modal-box .modal-lock{font-size:44px;margin-bottom:14px;}
+.fac-modal-box h3{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:white;margin-bottom:5px;}
+.fac-modal-box p{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:22px;line-height:1.5;}
+.fac-modal-box .modal-pw-wrap input{border-color:rgba(74,222,128,.2);}
+.fac-modal-box .modal-pw-wrap input:focus{border-color:rgba(74,222,128,.5);}
+.fac-enter-btn{width:100%;padding:13px;background:linear-gradient(135deg,#16a34a,#15803d);color:white;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.fac-enter-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(22,163,74,.4);}
+.fac-session-strip{display:none;background:linear-gradient(90deg,#14532d,#166534);padding:5px 22px;font-size:11px;color:#86efac;font-weight:600;letter-spacing:.5px;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(74,222,128,.2);}
+.fac-session-strip.show{display:flex;}
+.fac-session-strip button{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* ── FACILITATOR TAB CONTENT ── */
+.fac-locked{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;}
+.fac-locked-icon{font-size:56px;margin-bottom:16px;}
+.fac-locked h3{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+.fac-locked p{font-size:14px;color:var(--slate);margin-bottom:24px;max-width:380px;line-height:1.6;}
+.fac-unlock-btn{background:linear-gradient(135deg,#16a34a,#15803d);color:white;border:none;padding:13px 32px;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(22,163,74,.3);}
+.fac-unlock-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(22,163,74,.4);}
+.fac-content{display:none;}
+.fac-content.show{display:block;animation:fadeUp .35s ease;}
+
+/* Participant score table */
+.score-table-wrap{background:white;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px;}
+.score-table-header{background:linear-gradient(135deg,var(--navy),var(--navy-light));padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.score-table-header h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:white;}
+.score-table-header p{font-size:11px;color:var(--accent);}
+.score-table-search{display:flex;gap:8px;align-items:center;}
+.score-table-search input{padding:7px 13px;border:1.5px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.1);color:white;font-family:'DM Sans',sans-serif;font-size:12px;outline:none;width:180px;}
+.score-table-search input::placeholder{color:rgba(255,255,255,.4);}
+.score-table-search input:focus{border-color:rgba(79,195,247,.5);background:rgba(255,255,255,.15);}
+.score-table{width:100%;border-collapse:collapse;}
+.score-table thead tr{background:var(--surface);border-bottom:2px solid var(--border);}
+.score-table th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--slate);white-space:nowrap;}
+.score-table tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+.score-table tbody tr:hover{background:rgba(30,95,168,.03);}
+.score-table tbody tr:last-child{border-bottom:none;}
+.score-table td{padding:11px 14px;font-size:13px;color:var(--navy);vertical-align:middle;}
+.score-table td.name-cell{font-weight:600;}
+.score-table td.dept-cell{font-size:11px;color:var(--slate);}
+.tbl-pct{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:800;}
+.tbl-pct.high{background:rgba(74,222,128,.15);color:#16a34a;}
+.tbl-pct.mid{background:rgba(45,125,210,.12);color:#2D7DD2;}
+.tbl-pct.low{background:rgba(251,191,36,.15);color:#d97706;}
+.tbl-pct.fail{background:rgba(239,68,68,.1);color:#dc2626;}
+.tbl-pct.none{background:rgba(148,163,184,.1);color:var(--slate-light);}
+.tbl-status{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;}
+.score-table-loading{padding:40px;text-align:center;color:var(--slate);font-size:13px;}
+.fac-stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px;}
+.fac-stat{background:white;border-radius:12px;padding:16px 18px;border:1px solid var(--border);box-shadow:var(--shadow);text-align:center;}
+.fac-stat .fs-icon{font-size:24px;margin-bottom:6px;}
+.fac-stat .fs-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--navy);line-height:1;}
+.fac-stat .fs-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--slate);margin-top:3px;}
+@media(max-width:640px){.score-table-header{flex-direction:column;align-items:flex-start;}.score-table-search input{width:140px;}.score-table th,.score-table td{padding:8px 10px;font-size:11px;}}
+
+/* Responsive */
+@media(max-width:640px){
+  .header-top{padding:10px 14px;}
+  .hero-banner{flex-direction:column;padding:22px 18px;}
+  .hero-stats{justify-content:center;}
+  main{padding:18px 12px 60px;}
+  .lookup-card{padding:22px 16px;}
+  .lookup-input-row{flex-direction:column;}
+  .charts-row{grid-template-columns:1fr;}
+  .rr-label{width:100%;}
+  .adm-grid{grid-template-columns:1fr;}
+}
+
+/* ── DAILY REPORT ── */
+.daily-report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:10px;padding:16px 22px 20px;}
+.day-badge{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px;border-radius:12px;border:1.5px solid var(--border);background:white;text-align:center;}
+.day-badge.submitted{background:rgba(74,222,128,.08);border-color:rgba(22,163,74,.3);}
+.day-badge.not-submitted{background:rgba(239,68,68,.05);border-color:rgba(239,68,68,.15);}
+.day-badge .day-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:var(--navy);}
+.day-badge .day-icon{font-size:22px;line-height:1;}
+.day-badge .day-status{font-size:10px;font-weight:700;letter-spacing:.3px;}
+.day-badge.submitted .day-status{color:#16a34a;}
+.day-badge.not-submitted .day-status{color:#dc2626;}
+.report-table{width:100%;border-collapse:collapse;}
+.report-table thead tr{background:var(--surface);border-bottom:2px solid var(--border);}
+.report-table th{padding:9px 10px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--slate);white-space:nowrap;}
+.report-table th.name-col{text-align:left;padding-left:16px;}
+.report-table tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+.report-table tbody tr:hover{background:rgba(30,95,168,.02);}
+.report-table tbody tr:last-child{border-bottom:none;}
+.report-table td{padding:8px 10px;font-size:12px;color:var(--navy);text-align:center;vertical-align:middle;}
+.report-table td.name-col{text-align:left;font-weight:600;font-size:13px;padding-left:16px;}
+.report-table td.fac-col{font-size:11px;color:var(--slate);}
+.day-tick{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:15px;transition:all .2s;border:1.5px solid transparent;user-select:none;}
+.day-tick.done{background:rgba(74,222,128,.15);border-color:rgba(22,163,74,.3);color:#16a34a;}
+.day-tick.undone{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.15);color:#dc2626;font-size:11px;font-weight:700;}
+.day-tick:hover{transform:scale(1.18);}
+.report-save-bar{display:flex;align-items:center;gap:14px;padding:14px 22px;background:var(--surface);border-top:1px solid var(--border);flex-wrap:wrap;}
+.unsaved-note{font-size:12px;color:#d97706;font-weight:600;display:none;}
+.unsaved-note.show{display:block;}
+</style>
+</head>
+<body>
+
+<!-- ══ FACILITATOR PASSWORD MODAL ══ -->
+<div id="facPwModal" class="fac-modal-overlay">
+  <div class="fac-modal-box">
+    <div class="modal-lock">🏫</div>
+    <h3>Facilitator Access</h3>
+    <p>This area is restricted to facilitators and training coordinators. Enter your facilitator password to continue.</p>
+    <div class="modal-pw-wrap">
+      <input type="password" id="facPwInput" placeholder="Enter facilitator password" onkeydown="if(event.key==='Enter')checkFacPassword()">
+      <button class="modal-pw-toggle" onclick="toggleFacPw()" title="Show/hide">👁</button>
+    </div>
+    <div class="modal-error" id="facPwError"></div>
+    <button class="fac-enter-btn" onclick="checkFacPassword()">Enter Facilitator Area</button>
+    <button class="modal-cancel" onclick="closeFacModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- ══ PASSWORD MODAL ══ -->
+<div id="pwModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-lock">🔐</div>
+    <h3>Admin Access Required</h3>
+    <p>Enter the administrator password to unlock the configuration panel and edit portal content.</p>
+    <div class="modal-pw-wrap">
+      <input type="password" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword()">
+      <button class="modal-pw-toggle" onclick="togglePwVisibility()" title="Show/hide">👁</button>
+    </div>
+    <div class="modal-error" id="pwError"></div>
+    <button class="modal-enter-btn" onclick="checkPassword()">Unlock Admin Panel</button>
+    <button class="modal-cancel" onclick="closePasswordModal()">Cancel — return to portal</button>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-top">
+    <div class="logo-area">
+      <div class="logo-emblem">KLT</div>
+      <div class="title-block">
+        <h1>KOFIH LOCAL TRAINING</h1>
+        <span>Training Management Portal</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-badge"><span class="badge-dot"></span><span>40 Participants</span></div>
+      <button class="admin-btn" id="adminToggleBtn" onclick="handleAdminClick()">⚙️ Admin</button>
+    </div>
+  </div>
+
+  <!-- Admin mode active strip -->
+  <div id="adminModeStrip" class="admin-mode-strip">
+    <span>🔓 Admin Mode Active — you can now edit all portal content</span>
+    <button onclick="lockAdmin()">🔒 Lock &amp; Exit Admin</button>
+  </div>
+
+  <!-- ══ ADMIN DRAWER (only visible when authenticated) ══ -->
+  <div id="adminDrawer" class="admin-drawer">
+    <div class="admin-drawer-inner">
+      <h3>⚙️ Admin Configuration Panel</h3>
+      <div class="admin-tabs-row">
+        <button class="adm-tab active" onclick="switchAdmTab('integrations',this)">🔗 Integrations</button>
+        <button class="adm-tab" onclick="switchAdmTab('presentations',this)">📊 Presentations</button>
+        <button class="adm-tab" onclick="switchAdmTab('news',this)">📰 News</button>
+        <button class="adm-tab" onclick="switchAdmTab('outline',this)">📋 Program Outline</button>
+        <button class="adm-tab" onclick="switchAdmTab('announcements',this)">📢 Announcements</button>
+        <button class="adm-tab" onclick="switchAdmTab('events',this)">📅 Events</button>
+        <button class="adm-tab" onclick="switchAdmTab('quizzes',this)">🧠 Quizzes</button>
+        <button class="adm-tab" onclick="switchAdmTab('setup',this)">🔧 Setup Guide</button>
+      </div>
+
+      <!-- INTEGRATIONS -->
+      <div id="adm-integrations" class="adm-section active">
+        <div class="adm-grid">
+          <div class="adm-field"><label>Google Sheets Web App URL (Apps Script)</label><input type="url" id="cfg-sheet-url" placeholder="https://script.google.com/macros/s/.../exec"></div>
+          <div class="adm-field"><label>Self Pre-Assessment Google Form</label><input type="url" id="cfg-form-self-pre" placeholder="https://forms.gle/..."></div>
+          <div class="adm-field"><label>Facilitator Pre-Assessment Google Form</label><input type="url" id="cfg-form-fac-pre" placeholder="https://forms.gle/..."></div>
+          <div class="adm-field"><label>Self Post-Assessment Google Form</label><input type="url" id="cfg-form-self-post" placeholder="https://forms.gle/..."></div>
+          <div class="adm-field"><label>Facilitator Post-Assessment Google Form</label><input type="url" id="cfg-form-fac-post" placeholder="https://forms.gle/..."></div>
+          <div class="adm-field"><label>End of Training Exam Google Form</label><input type="url" id="cfg-form-exam" placeholder="https://forms.gle/..."></div>
+        </div>
+        <div class="adm-row-actions"><button class="adm-save-btn" onclick="saveIntegrations()">💾 Save Integration Settings</button></div>
+        <p class="adm-note">All settings save to your browser's local storage. Complete the Setup Guide tab first if this is your first time connecting.</p>
+      </div>
+
+      <!-- PRESENTATIONS -->
+      <div id="adm-presentations" class="adm-section">
+        <div class="adm-list" id="adm-topics-list"></div>
+        <div class="adm-row-actions"><button class="adm-save-btn" onclick="saveTopics()">💾 Save Presentation Settings</button></div>
+        <p class="adm-note">Change topic titles, subtitles, icons and paste Google Drive / Slides links here. Topics 12–15 are placeholders — rename them to match your actual content.</p>
+      </div>
+
+      <!-- NEWS -->
+      <div id="adm-news" class="adm-section">
+        <div class="adm-list" id="adm-news-list"></div>
+        <div class="adm-row-actions">
+          <button class="adm-add-btn" onclick="addNewsItem()">+ Add News Item</button>
+          <button class="adm-save-btn" onclick="saveNews()">💾 Save News</button>
+        </div>
+      </div>
+
+      <!-- PROGRAM OUTLINE -->
+      <div id="adm-outline" class="adm-section">
+        <div class="adm-list" id="adm-outline-list"></div>
+        <div class="adm-row-actions">
+          <button class="adm-add-btn" onclick="addOutlineItem()">+ Add Module</button>
+          <button class="adm-save-btn" onclick="saveOutline()">💾 Save Outline</button>
+        </div>
+      </div>
+
+      <!-- ANNOUNCEMENTS -->
+      <div id="adm-announcements" class="adm-section">
+        <div class="adm-list" id="adm-ann-list"></div>
+        <div class="adm-row-actions">
+          <button class="adm-add-btn" onclick="addAnnItem()">+ Add Announcement</button>
+          <button class="adm-save-btn" onclick="saveAnnouncements()">💾 Save Announcements</button>
+        </div>
+      </div>
+
+      <!-- EVENTS -->
+      <div id="adm-events" class="adm-section">
+        <div class="adm-list" id="adm-events-list"></div>
+        <div class="adm-row-actions">
+          <button class="adm-add-btn" onclick="addEventItem()">+ Add Event</button>
+          <button class="adm-save-btn" onclick="saveEvents()">💾 Save Events</button>
+        </div>
+      </div>
+
+      <!-- QUIZZES -->
+      <div id="adm-quizzes" class="adm-section">
+        <div class="adm-list" id="adm-quiz-list"></div>
+        <div class="adm-row-actions">
+          <button class="adm-add-btn" onclick="addQuizItem()">+ Add Quiz</button>
+          <button class="adm-save-btn" onclick="saveQuizzes()">💾 Save Quizzes</button>
+        </div>
+      </div>
+
+      <!-- SETUP GUIDE -->
+      <div id="adm-setup" class="adm-section">
+        <div style="max-width:820px;">
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:22px;margin-bottom:16px;">
+            <h4 style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;">📋 Step-by-step: Connect Google Sheets</h4>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.07);"><div style="width:24px;height:24px;background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:12px;flex-shrink:0;">1</div><div><p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:3px;">Create Your Google Sheet</p><p style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;">Go to <strong style="color:rgba(255,255,255,.7)">sheets.google.com</strong>, create a spreadsheet named <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">KOFIH Training Data</code>, and add a sheet tab called <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">Participants</code>.</p></div></div>
+              <div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.07);"><div style="width:24px;height:24px;background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:12px;flex-shrink:0;">2</div><div><p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:3px;">Set Up Column Headers (Row 1)</p><p style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.8;"><code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">telephone</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">name</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">department</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">selfPre</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">selfPreScore</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">facPre</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">facPreScore</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">selfPost</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">selfPostScore</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">facPost</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">facPostScore</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">exam</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">examScore</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">examTotal</code><br><strong style="color:rgba(255,255,255,.6);">Scores:</strong> Enter % directly for self/fac assessments (e.g. 75 = 75%). For final exam enter raw score + total — portal auto-calculates %.</p></div></div>
+              <div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.07);"><div style="width:24px;height:24px;background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:12px;flex-shrink:0;">3</div><div><p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:3px;">Add Your 40 Participants (Rows 2–41)</p><p style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;">Status values: <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">completed</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">pending</code> <code style="background:rgba(79,195,247,.15);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:10px;">not-started</code>. Score colour bands: 🟢 80%+ · 🔵 60–79% · 🟡 50–59% · 🔴 below 50%.</p></div></div>
+              <div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.07);"><div style="width:24px;height:24px;background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:12px;flex-shrink:0;">4</div><div><p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:3px;">Open Apps Script</p><p style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;">In your sheet click <strong style="color:rgba(255,255,255,.7)">Extensions → Apps Script</strong>. Delete any existing code, paste the script below, and press <strong style="color:rgba(255,255,255,.7)">Ctrl+S</strong> to save.</p></div></div>
+              <div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.07);"><div style="width:24px;height:24px;background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:12px;flex-shrink:0;">5</div><div><p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:3px;">Deploy as Web App</p><p style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;">Click <strong style="color:rgba(255,255,255,.7)">Deploy → New Deployment</strong>. Type: <strong style="color:rgba(255,255,255,.7)">Web App</strong>. Execute as: <strong style="color:rgba(255,255,255,.7)">Me</strong>. Access: <strong style="color:rgba(255,255,255,.7)">Anyone</strong>. Copy the Web App URL.</p></div></div>
+              <div style="display:flex;gap:12px;padding:12px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(255,255,255,.07);"><div style="width:24px;height:24px;background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:12px;flex-shrink:0;">6</div><div><p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:3px;">Paste URL in Integrations Tab</p><p style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;">Switch to the <strong style="color:rgba(255,255,255,.7)">🔗 Integrations</strong> tab above, paste the Web App URL into the first field, add your 5 Google Form links, then click Save.</p></div></div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:22px;">
+            <h4 style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--gold);margin-bottom:14px;">📝 Apps Script Code — Copy &amp; Paste into Extensions → Apps Script</h4>
+            <div style="background:#0d1117;border-radius:10px;padding:18px;overflow-x:auto;">
+<pre style="color:#e6edf3;font-size:11px;line-height:1.7;font-family:monospace;white-space:pre-wrap;">function doGet(e) {
+  var sheet   = SpreadsheetApp.getActiveSpreadsheet()
+                .getSheetByName("Participants");
+  var data    = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var tel     = e.parameter.tel;
+  var all     = e.parameter.all;
+
+  if (tel) {
+    // Return single participant by telephone (Participant tab lookup)
+    for (var i = 1; i &lt; data.length; i++) {
+      if (String(data[i][0]).trim() === String(tel).trim()) {
+        var row = {};
+        headers.forEach(function(h, idx) { row[h] = data[i][idx]; });
+        return out({ status: "ok", participant: row });
+      }
+    }
+    return out({ status: "not_found" });
+  }
+
+  // Build stats + optional full list
+  // A row counts as "completed" if:
+  //   - the status column says "completed", OR
+  //   - a score value exists (not blank) in the score column
+  var stats = { total: data.length - 1,
+                selfPre: 0, facPre: 0,
+                selfPost: 0, facPost: 0, exam: 0 };
+  var participants = [];
+
+  for (var j = 1; j &lt; data.length; j++) {
+    var r = {};
+    headers.forEach(function(h, idx) { r[h] = data[j][idx]; });
+
+    // Helper: count as completed if status = "completed" OR score cell has a value
+    if (isDone(r.selfPre,  r.selfPreScore))  stats.selfPre++;
+    if (isDone(r.facPre,   r.facPreScore))   stats.facPre++;
+    if (isDone(r.selfPost, r.selfPostScore)) stats.selfPost++;
+    if (isDone(r.facPost,  r.facPostScore))  stats.facPost++;
+    if (isDone(r.exam,     r.examScore))     stats.exam++;
+
+    if (all === "1") { participants.push(r); }
+  }
+
+  if (all === "1") {
+    return out({ status: "ok", stats: stats, participants: participants });
+  }
+  return out({ status: "ok", stats: stats });
+}
+
+// Count as done if status = "completed" OR a numeric score exists
+function isDone(status, score) {
+  if (String(status).trim().toLowerCase() === "completed") return true;
+  if (score !== "" &amp;&amp; score !== null &amp;&amp; score !== undefined &amp;&amp; !isNaN(parseFloat(score))) return true;
+  return false;
+}
+
+function out(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// doPost: receives daily report updates from the portal Facilitator tab
+function doPost(e) {
+  try {
+    var payload = JSON.parse(e.postData.contents);
+    if (payload.action !== 'updateReports') {
+      return out({ status: 'error', message: 'Unknown action' });
+    }
+    var sheet   = SpreadsheetApp.getActiveSpreadsheet()
+                  .getSheetByName("Participants");
+    var data    = sheet.getDataRange().getValues();
+    var headers = data[0];
+    var colIdx  = {};
+    headers.forEach(function(h, i) { colIdx[h] = i; });
+
+    var telCol = colIdx['telephone'];
+    var dayKeys = ['day2Report','day3Report','day4Report','day5Report',
+                   'day6Report','day7Report','day8Report','day9Report'];
+
+    payload.reports.forEach(function(rep) {
+      var tel = String(rep.telephone).trim();
+      for (var r = 1; r &lt; data.length; r++) {
+        if (String(data[r][telCol]).trim() === tel) {
+          dayKeys.forEach(function(key) {
+            if (colIdx[key] !== undefined &amp;&amp; rep[key] !== undefined) {
+              sheet.getRange(r + 1, colIdx[key] + 1).setValue(rep[key]);
+            }
+          });
+          break;
+        }
+      }
+    });
+    return out({ status: 'ok' });
+  } catch(err) {
+    return out({ status: 'error', message: err.toString() });
+  }
+}</pre>
+            </div>
+            <p style="font-size:11px;color:rgba(255,255,255,.35);margin-top:12px;line-height:1.6;">
+              ⚠️ This updated script now supports the Facilitator tab score table (<code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">?all=1</code>) and the Daily Report save feature (<code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">doPost</code>). If you had an older version, replace it with this one and re-deploy.<br><br>
+              📋 <strong style="color:rgba(255,255,255,.55);">New sheet columns required for Daily Reports:</strong> Add these 8 column headers to your Participants sheet: <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">day2Report</code> <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">day3Report</code> <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">day4Report</code> <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">day5Report</code> <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">day6Report</code> <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">day7Report</code> <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">day8Report</code> <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">day9Report</code>. Values should be <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">submitted</code> or <code style="background:rgba(79,195,247,.1);color:var(--accent);padding:1px 4px;border-radius:3px;">not-submitted</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Facilitator session strip -->
+  <div id="facSessionStrip" class="fac-session-strip">
+    <span>🏫 Facilitator Mode Active</span>
+    <button onclick="lockFac()">🔒 Exit Facilitator Area</button>
+  </div>
+
+  <nav>
+    <button class="nav-btn active" onclick="switchTab('home',this)">🏠 Home</button>
+    <button class="nav-btn" onclick="switchTab('presentations',this)">📊 Presentations</button>
+    <button class="nav-btn" onclick="switchTab('assessment',this)">📝 Assessment</button>
+    <button class="nav-btn" onclick="switchTab('participant',this)">🔍 Participant</button>
+    <button class="nav-btn" onclick="handleFacTab(this)">🏫 Facilitators</button>
+    <button class="nav-btn" onclick="switchTab('others',this)">📌 Others</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ══ HOME ══ -->
+  <div id="tab-home" class="page active">
+    <div class="subtab-bar">
+      <button class="subtab-btn active" onclick="switchSubtab('home','statistics',this)">📈 Statistics</button>
+      <button class="subtab-btn" onclick="switchSubtab('home','news',this)">📰 News</button>
+      <button class="subtab-btn" onclick="switchSubtab('home','program',this)">📋 Program Outline</button>
+    </div>
+    <div id="home-statistics" class="subpage active">
+      <div class="section-header"><h2>Training Dashboard</h2><p>Live completion analytics — pulled from Google Sheets</p><div class="section-line"></div></div>
+      <div class="hero-banner">
+        <div class="hero-text"><div class="tag">KOFIH LOCAL TRAINING</div><h2>Training Progress<br>Overview</h2><p>Monitor completion rates, assessment scores and participant performance across all modules in real time.</p></div>
+        <div class="hero-stats">
+          <div class="hs-item"><div class="hs-num">40</div><div class="hs-label">Participants</div></div>
+          <div class="hs-item"><div class="hs-num">15</div><div class="hs-label">Topics</div></div>
+          <div class="hs-item"><div class="hs-num">5</div><div class="hs-label">Assessments</div></div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card" style="--ac:#1E5FA8"><div class="label">Total Enrolled</div><div class="value">40</div><div class="sub">Active participants</div></div>
+        <div class="stat-card" style="--ac:#16a34a"><div class="label">Pre-Assessments</div><div class="value" id="stat-pre">—</div><div class="sub">Self pre-assessment</div></div>
+        <div class="stat-card" style="--ac:#d97706"><div class="label">Post-Assessments</div><div class="value" id="stat-post">—</div><div class="sub">Self post-assessment</div></div>
+        <div class="stat-card" style="--ac:#7c3aed"><div class="label">Final Exams</div><div class="value" id="stat-exam">—</div><div class="sub">Exams submitted</div></div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card"><h3>Assessment Completion Rates</h3><p>% of 40 participants per assessment type</p><div class="chart-wrap"><canvas id="completionChart"></canvas></div></div>
+      </div>
+      <div class="section-header" style="margin-top:8px;margin-bottom:16px;"><h2 style="font-size:17px;">Completion by Assessment Type</h2><p>Individual breakdown for each of the 5 assessments — out of 40 participants</p><div class="section-line"></div></div>
+      <div class="donut-row">
+        <div class="donut-card">
+          <div class="donut-label">📝 Self Pre-Assessment</div>
+          <div class="donut-wrap"><canvas id="donut-selfPre"></canvas><div class="donut-center" id="center-selfPre">—</div></div>
+          <div class="donut-meta" id="meta-selfPre">— of 40</div>
+        </div>
+        <div class="donut-card">
+          <div class="donut-label">👨‍🏫 Facilitator Pre</div>
+          <div class="donut-wrap"><canvas id="donut-facPre"></canvas><div class="donut-center" id="center-facPre">—</div></div>
+          <div class="donut-meta" id="meta-facPre">— of 40</div>
+        </div>
+        <div class="donut-card">
+          <div class="donut-label">🔄 Self Post-Assessment</div>
+          <div class="donut-wrap"><canvas id="donut-selfPost"></canvas><div class="donut-center" id="center-selfPost">—</div></div>
+          <div class="donut-meta" id="meta-selfPost">— of 40</div>
+        </div>
+        <div class="donut-card">
+          <div class="donut-label">✅ Facilitator Post</div>
+          <div class="donut-wrap"><canvas id="donut-facPost"></canvas><div class="donut-center" id="center-facPost">—</div></div>
+          <div class="donut-meta" id="meta-facPost">— of 40</div>
+        </div>
+        <div class="donut-card">
+          <div class="donut-label">🏆 Final Examination</div>
+          <div class="donut-wrap"><canvas id="donut-exam"></canvas><div class="donut-center" id="center-exam">—</div></div>
+          <div class="donut-meta" id="meta-exam">— of 40</div>
+        </div>
+      </div>
+    </div>
+    <div id="home-news" class="subpage">
+      <div class="section-header"><h2>Training News &amp; Updates</h2><p>Latest information for participants</p><div class="section-line"></div></div>
+      <div class="news-grid" id="newsGrid"></div>
+    </div>
+    <div id="home-program" class="subpage">
+      <div class="section-header"><h2>Program Outline</h2><p>Structured schedule and learning objectives</p><div class="section-line"></div></div>
+      <div class="outline-timeline" id="outlineList"></div>
+    </div>
+  </div>
+
+  <!-- ══ PRESENTATIONS ══ -->
+  <div id="tab-presentations" class="page">
+    <div class="section-header"><h2>Training Presentations</h2><p>Click a topic card to open its presentation material</p><div class="section-line"></div></div>
+    <div class="presentations-grid" id="presentationsGrid"></div>
+  </div>
+
+  <!-- ══ ASSESSMENT ══ -->
+  <div id="tab-assessment" class="page">
+    <div id="assessment-forms" class="subpage active">
+      <div class="section-header"><h2>Assessment Forms</h2><p>Click the button below to open each Google Form. Use your telephone number as your ID when filling the form.</p><div class="section-line"></div></div>
+      <div class="assessment-forms-grid" id="assessmentFormsGrid"></div>
+      <div style="background:rgba(30,95,168,.05);border:1px solid rgba(30,95,168,.15);border-radius:12px;padding:16px 20px;max-width:600px;margin-top:6px;">
+        <p style="font-size:13px;color:var(--slate);line-height:1.6;"><strong style="color:var(--navy)">ℹ️ How it works:</strong> After submitting, your coordinator updates the Google Sheet. Use the <strong>Participant tab</strong> to check your personal status and score. Facilitator assessments are in the <strong>🏫 Facilitators tab</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PARTICIPANT ══ -->
+  <div id="tab-participant" class="page">
+    <div class="section-header"><h2>Participant Status Lookup</h2><p>Enter your telephone number to view your private training status and scores</p><div class="section-line"></div></div>
+    <div class="lookup-wrapper">
+      <div class="lookup-card">
+        <div class="lookup-icon-wrap">🔍</div>
+        <h3>Search Your Status</h3>
+        <p>Your telephone number is your unique identifier. Only your own record is shown — no other participant's data is ever visible.</p>
+        <div class="lookup-input-row">
+          <input type="tel" id="lookupTel" placeholder="e.g. 0244123456" onkeydown="if(event.key==='Enter')lookupParticipant()">
+          <button class="btn-primary" onclick="lookupParticipant()">Search</button>
+        </div>
+        <p class="lookup-hint">🔒 Your data is private and secure.</p>
+        <div id="lookupLoading" class="loading-msg"><span class="spinner"></span> Fetching your record…</div>
+        <div id="lookupError" class="error-msg"></div>
+        <div id="resultCard" class="result-card">
+          <div class="result-header">
+            <div class="result-avatar" id="resInitial">—</div>
+            <div class="result-name-block"><h4 id="resName">—</h4><span id="resDept">—</span></div>
+          </div>
+          <div class="result-body">
+            <div class="result-section-title">PERSONAL INFO</div>
+            <div class="result-row"><div class="rr-icon">📞</div><div class="rr-label">Telephone</div><div class="rr-value" id="resTel">—</div></div>
+            <div class="result-section-title">ASSESSMENT STATUS &amp; SCORES</div>
+            <div class="result-row"><div class="rr-icon">📝</div><div class="rr-label">Self Pre-Assessment</div><div class="rr-value" id="resSPre">—</div></div>
+            <div class="result-row"><div class="rr-icon">👨‍🏫</div><div class="rr-label">Facilitator Pre-Assess.</div><div class="rr-value" id="resFPre">—</div></div>
+            <div class="result-row"><div class="rr-icon">🔄</div><div class="rr-label">Self Post-Assessment</div><div class="rr-value" id="resSPost">—</div></div>
+            <div class="result-row"><div class="rr-icon">✅</div><div class="rr-label">Facilitator Post-Assess.</div><div class="rr-value" id="resFPost">—</div></div>
+            <div class="result-row"><div class="rr-icon">🏆</div><div class="rr-label">End of Training Exam</div><div class="rr-value" id="resExam">—</div></div>
+            <div class="result-section-title">📅 SELF STUDY DAILY REPORT SUBMISSION</div>
+            <div class="daily-report-grid" id="resDailyReport">
+              <!-- rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FACILITATORS ══ -->
+  <div id="tab-facilitators" class="page">
+
+    <!-- LOCKED STATE — shown before password -->
+    <div class="fac-locked" id="facLockedView">
+      <div class="fac-locked-icon">🏫</div>
+      <h3>Facilitator Area</h3>
+      <p>This section is restricted to facilitators and training coordinators. It contains facilitator assessment forms and a full participant score overview.</p>
+      <button class="fac-unlock-btn" onclick="handleFacTabContent()">🔐 Enter Facilitator Password</button>
+    </div>
+
+    <!-- UNLOCKED CONTENT — shown after password -->
+    <div class="fac-content" id="facContent">
+
+      <div class="subtab-bar">
+        <button class="subtab-btn active" onclick="switchSubtab('facilitators','assessments',this)">📝 Assessments</button>
+        <button class="subtab-btn" onclick="switchSubtab('facilitators','scores',this)">📊 Participant Scores</button>
+        <button class="subtab-btn" onclick="switchSubtab('facilitators','dailyreport',this)">📅 Daily Reports</button>
+      </div>
+
+      <!-- Facilitator Assessments -->
+      <div id="facilitators-assessments" class="subpage active">
+        <div class="section-header">
+          <h2>Facilitator Assessments</h2>
+          <p>Complete these forms for each participant using their telephone number as the unique identifier</p>
+          <div class="section-line"></div>
+        </div>
+        <div class="assessment-forms-grid" id="facAssessmentFormsGrid"></div>
+        <div style="background:rgba(22,163,74,.05);border:1px solid rgba(22,163,74,.2);border-radius:12px;padding:16px 20px;max-width:600px;margin-top:6px;">
+          <p style="font-size:13px;color:var(--slate);line-height:1.6;">
+            <strong style="color:var(--navy)">📌 Facilitator Note:</strong> Always enter the participant's telephone number exactly as it appears in the Master Sheet. After submitting, update the participant's status in the Google Sheet so scores reflect immediately in the portal.
+          </p>
+        </div>
+      </div>
+
+      <!-- Participant Scores Table -->
+      <div id="facilitators-scores" class="subpage">
+        <div class="section-header">
+          <h2>Participant Score Overview</h2>
+          <p>Live scores for all 40 participants — pulled from the Master Google Sheet</p>
+          <div class="section-line"></div>
+        </div>
+
+        <!-- Summary stat cards -->
+        <div class="fac-stats-row" id="facStatsRow">
+          <div class="fac-stat"><div class="fs-icon">👥</div><div class="fs-val" id="fstat-total">40</div><div class="fs-lbl">Total Participants</div></div>
+          <div class="fac-stat"><div class="fs-icon">📝</div><div class="fs-val" id="fstat-selfpre">—</div><div class="fs-lbl">Self Pre Done</div></div>
+          <div class="fac-stat"><div class="fs-icon">🔄</div><div class="fs-val" id="fstat-selfpost">—</div><div class="fs-lbl">Self Post Done</div></div>
+          <div class="fac-stat"><div class="fs-icon">👨‍🏫</div><div class="fs-val" id="fstat-facpre">—</div><div class="fs-lbl">Fac Pre Done</div></div>
+          <div class="fac-stat"><div class="fs-icon">✅</div><div class="fs-val" id="fstat-facpost">—</div><div class="fs-lbl">Fac Post Done</div></div>
+          <div class="fac-stat"><div class="fs-icon">🏆</div><div class="fs-val" id="fstat-exam">—</div><div class="fs-lbl">Exams Done</div></div>
+        </div>
+
+        <div class="score-table-wrap">
+          <div class="score-table-header">
+            <div>
+              <h3>All Participants — Assessment Scores</h3>
+              <p>Scores update automatically when the Google Sheet is edited</p>
+            </div>
+            <div class="score-table-search">
+              <input type="text" id="scoreSearchInput" placeholder="🔍 Search name or facility…" oninput="filterScoreTable()">
+              <button class="btn-primary" onclick="loadFacScores()" style="padding:7px 14px;font-size:12px;">↻ Refresh</button>
+            </div>
+          </div>
+          <div id="scoreTableContainer">
+            <div class="score-table-loading">
+              <span class="spinner"></span> Loading participant scores from Google Sheet…
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Report Tracking -->
+      <div id="facilitators-dailyreport" class="subpage">
+        <div class="section-header">
+          <h2>Self Study Daily Report Submission</h2>
+          <p>Tick each day a participant has submitted their self-study report. Changes save to browser and sync to the sheet column when you refresh.</p>
+          <div class="section-line"></div>
+        </div>
+
+        <div style="background:rgba(30,95,168,.05);border:1px solid rgba(30,95,168,.15);border-radius:12px;padding:14px 18px;max-width:680px;margin-bottom:20px;">
+          <p style="font-size:13px;color:var(--slate);line-height:1.7;">
+            <strong style="color:var(--navy);">📋 How to use:</strong> Click the circle under each day to toggle between ✅ Submitted and ✗ Not Submitted.
+            When done, click <strong>Save to Sheet</strong> — this updates columns <code style="background:rgba(30,95,168,.08);color:var(--blue);padding:1px 5px;border-radius:4px;font-size:11px;">day2Report</code> through <code style="background:rgba(30,95,168,.08);color:var(--blue);padding:1px 5px;border-radius:4px;font-size:11px;">day9Report</code> in your Google Sheet via the Apps Script.
+            Participants can see their own daily status in the Participant tab.
+          </p>
+        </div>
+
+        <div class="score-table-wrap">
+          <div class="score-table-header">
+            <div>
+              <h3>Daily Report Tracker — Day 2 to Day 9</h3>
+              <p>Click a circle to toggle · Green = Submitted · Red = Not Submitted</p>
+            </div>
+            <div class="score-table-search">
+              <input type="text" id="reportSearchInput" placeholder="🔍 Search name…" oninput="filterReportTable()">
+              <button class="btn-primary" onclick="saveReportToSheet()" style="padding:7px 14px;font-size:12px;background:linear-gradient(135deg,#16a34a,#15803d);box-shadow:0 3px 10px rgba(22,163,74,.3);">💾 Save to Sheet</button>
+            </div>
+          </div>
+          <div id="reportTableContainer">
+            <div class="score-table-loading"><span class="spinner"></span> Loading participant data…</div>
+          </div>
+          <div class="report-save-bar">
+            <span class="unsaved-note" id="unsavedNote">⚠️ You have unsaved changes</span>
+            <span style="font-size:11px;color:var(--slate-light);">Last saved: <span id="lastSavedTime">—</span></span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end fac-content -->
+  </div>
+
+  <!-- ══ OTHERS ══ -->
+  <div id="tab-others" class="page">
+    <div class="subtab-bar">
+      <button class="subtab-btn active" onclick="switchSubtab('others','announcements',this)">📢 Announcements</button>
+      <button class="subtab-btn" onclick="switchSubtab('others','quizzes',this)">🧠 Quizzes</button>
+      <button class="subtab-btn" onclick="switchSubtab('others','events',this)">📅 Events</button>
+    </div>
+    <div id="others-announcements" class="subpage active">
+      <div class="section-header"><h2>Announcements</h2><p>Official communications for participants</p><div class="section-line"></div></div>
+      <div class="announcement-list" id="annList"></div>
+    </div>
+    <div id="others-quizzes" class="subpage">
+      <div class="section-header"><h2>Training Quizzes</h2><p>Topic-based knowledge checks</p><div class="section-line"></div></div>
+      <div class="quiz-grid" id="quizGrid"></div>
+    </div>
+    <div id="others-events" class="subpage">
+      <div class="section-header"><h2>Training Events</h2><p>Schedule of sessions and key milestones</p><div class="section-line"></div></div>
+      <div class="events-list" id="eventsList"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════════════════
+const ADMIN_PASSWORD = 'KOFIH2026';
+const CFG_KEY = 'kofih_cfg_v3';
+const CONTENT_KEY = 'kofih_content_v4';
+let adminUnlocked = false;
+
+// ── Default content (editable by admin) ──
+const DEFAULT_CONTENT = {
+  topics: [
+    { icon:'🏗️', title:'Organizational Foundations',   sub:'Structure & Governance',       link:'' },
+    { icon:'📊', title:'Data Management & Reporting',   sub:'Analytics & Insights',         link:'' },
+    { icon:'🤝', title:'Stakeholder Engagement',        sub:'Communication Strategies',      link:'' },
+    { icon:'⚙️', title:'Operational Procedures',        sub:'Processes & Standards',         link:'' },
+    { icon:'🛡️', title:'Compliance & Ethics',           sub:'Policy & Regulations',          link:'' },
+    { icon:'💡', title:'Innovation & Strategy',         sub:'Future Planning',               link:'' },
+    { icon:'🌐', title:'Digital Transformation',        sub:'Technology Adoption',           link:'' },
+    { icon:'📈', title:'Performance Management',        sub:'KPIs & Evaluation',             link:'' },
+    { icon:'🧩', title:'Team Dynamics & Leadership',    sub:'People Management',             link:'' },
+    { icon:'🔬', title:'Research & Development',        sub:'Applied Learning',              link:'' },
+    { icon:'🎯', title:'Impact Measurement',            sub:'Outcomes & Evaluation',         link:'' },
+    { icon:'📣', title:'Communication & Advocacy',      sub:'Messaging & Outreach',          link:'' },
+    { icon:'💰', title:'Financial Management',          sub:'Budgeting & Accountability',    link:'' },
+    { icon:'🌍', title:'Community Engagement',          sub:'Partnerships & Inclusion',      link:'' },
+    { icon:'🏅', title:'Monitoring & Evaluation',       sub:'Learning & Adaptation',         link:'' },
+  ],
+  news: [
+    { icon:'📢', bg:'linear-gradient(135deg,#0A1628,#1E5FA8)', tag:'Important', tagBg:'rgba(30,95,168,.1)', tagColor:'#1E5FA8', title:'Pre-Assessment Deadline Extended', body:'The deadline for completing the self pre-assessment has been extended to accommodate all participants.', date:'2 days ago' },
+    { icon:'🎓', bg:'linear-gradient(135deg,#16213e,#0f3460)', tag:'Update',    tagBg:'rgba(30,95,168,.1)', tagColor:'#1E5FA8', title:'New Presentation Material Available', body:'Topic 7 and Topic 8 slide decks have been updated. Click the topic card in Presentations to access them.', date:'4 days ago' },
+    { icon:'🏆', bg:'linear-gradient(135deg,#1a1a2e,#16213e)', tag:'Achievement', tagBg:'rgba(74,222,128,.12)', tagColor:'#16a34a', title:'Facility A Leads Completion', body:'Congratulations to Facility A for achieving 95% assessment completion ahead of schedule.', date:'1 week ago' },
+    { icon:'📋', bg:'linear-gradient(135deg,#0A1628,#2D7DD2)', tag:'Reminder',  tagBg:'rgba(244,165,34,.12)', tagColor:'#d97706', title:'Final Exam Date Confirmed', body:'The end of training examination is scheduled. Participants will be notified of their individual slot.', date:'1 week ago' },
+  ],
+  outline: [
+    { day:'Day 1 — Module 1', title:'Orientation & Introduction to KOFIH', body:'Welcome session, program overview, participant introductions, and foundational knowledge of KOFIH\'s mission, vision and organizational structure.' },
+    { day:'Day 1 — Module 2', title:'Pre-Assessment & Baseline Evaluation', body:'Participants complete the Self Pre-Assessment and Facilitator Pre-Assessment via the Google Forms linked in the Assessment tab.' },
+    { day:'Day 2–3 — Module 3–6', title:'Core Topics: Presentations 1–6', body:'Deep-dive into core subject areas. Interactive sessions with Q&A, group discussions, and practical case studies.' },
+    { day:'Day 4 — Module 7–9', title:'Advanced Topics: Presentations 7–9', body:'Advanced modules with practical application and cross-departmental collaboration scenarios.' },
+    { day:'Day 5 — Module 10–11', title:'Specialized Topics: Presentations 10–11', body:'Specialized sessions followed by group workshops and peer-to-peer knowledge sharing activities.' },
+    { day:'Day 6 — Final', title:'Post-Assessment, Final Exam & Closing', body:'Post-Assessments and End of Training Examination via Google Forms. Closing ceremony and certificate presentation.' },
+  ],
+  announcements: [
+    { icon:'🚨', borderColor:'#dc2626', title:'Mandatory: Attendance Sheet Signing', body:'All participants must sign the physical attendance register at the start of each session. Digital attendance alone is not sufficient for certification.', meta:'Today · 🔴 High Priority' },
+    { icon:'📋', borderColor:'#1E5FA8', title:'Assessment Completion Reminder', body:'Participants who have not yet completed the Self Pre-Assessment should do so via the Assessment tab. Your telephone number is your unique ID.', meta:'Yesterday · 🔵 Standard' },
+    { icon:'🍽️', borderColor:'#1E5FA8', title:'Lunch Break Schedule', body:'Lunch will be served from 12:30 PM – 1:30 PM daily in the main hall. Please inform coordinators of any dietary restrictions.', meta:'2 days ago · 🟡 Information' },
+    { icon:'📱', borderColor:'#1E5FA8', title:'Training Portal Access', body:'Access this portal from your mobile phone using the link shared via WhatsApp. Bookmark it for quick access throughout training.', meta:'3 days ago · 🟢 Setup' },
+  ],
+  events: [
+    { day:'28', month:'Mar', title:'Training Kick-off & Orientation', body:'Opening ceremony, welcome address, introduction of facilitators and participants. Portal access distribution.', meta:'🕘 9:00 AM | 📍 Main Hall | ✅ Completed' },
+    { day:'29', month:'Mar', title:'Core Topics — Day 1 (Topics 1–4)', body:'Presentations on Organizational Foundations, Data Management, Stakeholder Engagement, and Operational Procedures.', meta:'🕘 8:30 AM | 📍 Room A | ✅ Completed' },
+    { day:'30', month:'Mar', title:'Core Topics — Day 2 (Topics 5–8)', body:'Sessions on Compliance & Ethics, Innovation, Digital Transformation, and Performance Management.', meta:'🕘 8:30 AM | 📍 Room A | 🔵 Today' },
+    { day:'31', month:'Mar', title:'Advanced Topics & Workshop (Topics 9–11)', body:'Team Dynamics, Research & Development, Impact Measurement. Afternoon group workshop and peer learning.', meta:'🕘 8:30 AM | 📍 Room B | 🟡 Tomorrow' },
+    { day:'01', month:'Apr', title:'Final Exam & Closing Ceremony', body:'End of Training Exam, Post-Assessments, feedback, certificate presentation and closing remarks.', meta:'🕘 9:00 AM | 📍 Main Hall | ⏳ Upcoming' },
+  ],
+  quizzes: [
+    { icon:'🏗️', title:'Quiz: Organizational Foundations', mins:'10', questions:'8', status:'open' },
+    { icon:'📊', title:'Quiz: Data Management', mins:'8', questions:'6', status:'open' },
+    { icon:'🛡️', title:'Quiz: Compliance & Ethics', mins:'12', questions:'10', status:'open' },
+    { icon:'🌐', title:'Quiz: Digital Transformation', mins:'10', questions:'8', status:'upcoming' },
+    { icon:'📈', title:'Quiz: Performance Management', mins:'10', questions:'7', status:'upcoming' },
+    { icon:'🎯', title:'Quiz: Impact Measurement', mins:'15', questions:'12', status:'closed' },
+  ]
+};
+
+// ══════════════════════════════════════════════════════
+//  STORAGE
+// ══════════════════════════════════════════════════════
+function loadCfg()  { try { return JSON.parse(localStorage.getItem(CFG_KEY))     || {}; } catch(e) { return {}; } }
+function loadContent() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CONTENT_KEY));
+    if (!saved) return JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+    // Merge: saved overrides defaults
+    return Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_CONTENT)), saved);
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_CONTENT)); }
+}
+function saveContent(c) { localStorage.setItem(CONTENT_KEY, JSON.stringify(c)); }
+
+// ══════════════════════════════════════════════════════
+//  PASSWORD / AUTH
+// ══════════════════════════════════════════════════════
+function handleAdminClick() {
+  if (adminUnlocked) {
+    toggleDrawer();
+  } else {
+    document.getElementById('pwModal').classList.add('show');
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwError').textContent = '';
+    setTimeout(() => document.getElementById('pwInput').focus(), 100);
+  }
+}
+
+function checkPassword() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PASSWORD) {
+    adminUnlocked = true;
+    document.getElementById('pwModal').classList.remove('show');
+    document.getElementById('adminModeStrip').classList.add('show');
+    document.getElementById('adminToggleBtn').classList.add('active-session');
+    document.getElementById('adminToggleBtn').textContent = '⚙️ Admin ✓';
+    openDrawer();
+  } else {
+    document.getElementById('pwError').textContent = '❌ Incorrect password. Please try again.';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+    // shake animation
+    const box = document.querySelector('.modal-box');
+    box.style.animation = 'none';
+    setTimeout(() => { box.style.animation = ''; }, 10);
+  }
+}
+
+function closePasswordModal() {
+  document.getElementById('pwModal').classList.remove('show');
+}
+
+function togglePwVisibility() {
+  const inp = document.getElementById('pwInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function lockAdmin() {
+  adminUnlocked = false;
+  document.getElementById('adminModeStrip').classList.remove('show');
+  document.getElementById('adminDrawer').classList.remove('open');
+  document.getElementById('adminToggleBtn').classList.remove('active-session');
+  document.getElementById('adminToggleBtn').textContent = '⚙️ Admin';
+}
+
+function openDrawer() {
+  document.getElementById('adminDrawer').classList.add('open');
+  populateAdminDrawer();
+}
+
+function toggleDrawer() {
+  const d = document.getElementById('adminDrawer');
+  if (d.classList.contains('open')) {
+    d.classList.remove('open');
+  } else {
+    d.classList.add('open');
+    populateAdminDrawer();
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  ADMIN DRAWER TABS
+// ══════════════════════════════════════════════════════
+function switchAdmTab(tab, btn) {
+  document.querySelectorAll('.adm-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.adm-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('adm-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+function populateAdminDrawer() {
+  const cfg = loadCfg();
+  const con = loadContent();
+  // Integrations
+  ['sheet-url','form-self-pre','form-fac-pre','form-self-post','form-fac-post','form-exam'].forEach(k => {
+    const el = document.getElementById('cfg-' + k);
+    if (el && cfg[k.replace(/-/g, '_').replace('cfg_','')] !== undefined) el.value = cfg[k.replace(/-/g,'_')] || '';
+  });
+  // Map field ids to cfg keys
+  setField('cfg-sheet-url',    cfg.sheetUrl);
+  setField('cfg-form-self-pre', cfg.formSelfPre);
+  setField('cfg-form-fac-pre',  cfg.formFacPre);
+  setField('cfg-form-self-post',cfg.formSelfPost);
+  setField('cfg-form-fac-post', cfg.formFacPost);
+  setField('cfg-form-exam',     cfg.formExam);
+  // Render editable lists
+  renderAdmTopics(con.topics);
+  renderAdmNews(con.news);
+  renderAdmOutline(con.outline);
+  renderAdmAnnouncements(con.announcements);
+  renderAdmEvents(con.events);
+  renderAdmQuizzes(con.quizzes);
+}
+
+function setField(id, val) { const el = document.getElementById(id); if (el && val) el.value = val; }
+
+// ── INTEGRATIONS SAVE ──
+function saveIntegrations() {
+  const cfg = {
+    sheetUrl:     document.getElementById('cfg-sheet-url').value.trim(),
+    formSelfPre:  document.getElementById('cfg-form-self-pre').value.trim(),
+    formFacPre:   document.getElementById('cfg-form-fac-pre').value.trim(),
+    formSelfPost: document.getElementById('cfg-form-self-post').value.trim(),
+    formFacPost:  document.getElementById('cfg-form-fac-post').value.trim(),
+    formExam:     document.getElementById('cfg-form-exam').value.trim(),
+  };
+  localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+  renderAssessmentForms();
+  toast('✅ Integration settings saved!');
+}
+
+// ── TOPICS ──
+function renderAdmTopics(topics) {
+  document.getElementById('adm-topics-list').innerHTML = topics.map((t,i) => `
+    <div class="adm-list-item">
+      <div class="adm-list-item-header"><span>Topic ${i+1}</span></div>
+      <div class="adm-topic-row">
+        <div class="adm-field"><label>Icon (emoji)</label><input type="text" value="${esc(t.icon)}" data-ti="${i}" data-tf="icon" placeholder="🏗️" maxlength="4"></div>
+        <div class="adm-field"><label>Title</label><input type="text" value="${esc(t.title)}" data-ti="${i}" data-tf="title" placeholder="Topic title"></div>
+        <div class="adm-field"><label>Subtitle</label><input type="text" value="${esc(t.sub)}" data-ti="${i}" data-tf="sub" placeholder="Short description"></div>
+      </div>
+      <div class="adm-field" style="margin-top:8px"><label>Presentation Link (Google Drive / Slides)</label><input type="url" value="${esc(t.link)}" data-ti="${i}" data-tf="link" placeholder="https://drive.google.com/..."></div>
+    </div>`).join('');
+}
+
+function saveTopics() {
+  const con = loadContent();
+  document.querySelectorAll('#adm-topics-list input').forEach(inp => {
+    const i = parseInt(inp.dataset.ti);
+    const f = inp.dataset.tf;
+    if (!isNaN(i) && f) con.topics[i][f] = inp.value.trim();
+  });
+  saveContent(con);
+  renderPresentations();
+  toast('✅ Presentation settings saved!');
+}
+
+// ── NEWS ──
+function renderAdmNews(news) {
+  document.getElementById('adm-news-list').innerHTML = news.map((n,i) => `
+    <div class="adm-list-item" id="adm-news-item-${i}">
+      <div class="adm-list-item-header"><span>News Item ${i+1}</span><button class="adm-del-btn" onclick="deleteItem('news',${i})">🗑 Remove</button></div>
+      <div class="adm-grid">
+        <div class="adm-field"><label>Icon / Emoji (shown if no image)</label><input type="text" data-ni="${i}" data-nf="icon" value="${esc(n.icon)}" maxlength="4"></div>
+        <div class="adm-field"><label>Tag Label</label><input type="text" data-ni="${i}" data-nf="tag" value="${esc(n.tag)}"></div>
+        <div class="adm-field"><label>Title</label><input type="text" data-ni="${i}" data-nf="title" value="${esc(n.title)}"></div>
+        <div class="adm-field"><label>Date Text</label><input type="text" data-ni="${i}" data-nf="date" value="${esc(n.date)}" placeholder="e.g. 2 days ago"></div>
+      </div>
+      <div class="adm-field" style="margin-top:8px"><label>Body Text</label><textarea data-ni="${i}" data-nf="body" rows="2">${esc(n.body)}</textarea></div>
+      <div class="img-upload-row">
+        <label class="img-upload-btn">
+          📷 Upload Image
+          <input type="file" accept="image/*" onchange="handleImgUpload(this,'news',${i})">
+        </label>
+        ${n.img
+          ? `<img class="img-preview" src="${n.img}" alt="preview">
+             <button class="img-clear-btn" onclick="clearImg('news',${i})">✕ Remove</button>`
+          : `<div class="img-preview-placeholder">🖼️</div><span style="font-size:11px;color:rgba(255,255,255,.35);">No image — emoji shown</span>`}
+      </div>
+    </div>`).join('');
+}
+
+function addNewsItem() {
+  const con = loadContent();
+  con.news.push({ icon:'📌', bg:'linear-gradient(135deg,#0A1628,#1E5FA8)', tag:'New', tagBg:'rgba(30,95,168,.1)', tagColor:'#1E5FA8', title:'New Announcement', body:'Add your content here.', date:'Today' });
+  saveContent(con);
+  renderAdmNews(con.news);
+}
+
+function saveNews() {
+  const con = loadContent();
+  document.querySelectorAll('#adm-news-list input,#adm-news-list textarea').forEach(inp => {
+    const i = inp.dataset.ni; const f = inp.dataset.nf;
+    if (i !== undefined && f) con.news[parseInt(i)][f] = inp.value.trim();
+  });
+  saveContent(con);
+  renderNews();
+  toast('✅ News saved!');
+}
+
+// ── OUTLINE ──
+function renderAdmOutline(outline) {
+  document.getElementById('adm-outline-list').innerHTML = outline.map((o,i) => `
+    <div class="adm-list-item">
+      <div class="adm-list-item-header"><span>Module ${i+1}</span><button class="adm-del-btn" onclick="deleteItem('outline',${i})">🗑 Remove</button></div>
+      <div class="adm-grid">
+        <div class="adm-field"><label>Day/Module Tag</label><input type="text" data-oi="${i}" data-of="day" value="${esc(o.day)}" placeholder="Day 1 — Module 1"></div>
+        <div class="adm-field"><label>Title</label><input type="text" data-oi="${i}" data-of="title" value="${esc(o.title)}"></div>
+      </div>
+      <div class="adm-field" style="margin-top:8px"><label>Description</label><textarea data-oi="${i}" data-of="body" rows="2">${esc(o.body)}</textarea></div>
+    </div>`).join('');
+}
+
+function addOutlineItem() {
+  const con = loadContent();
+  con.outline.push({ day:'Day X — Module X', title:'New Module', body:'Describe this module here.' });
+  saveContent(con);
+  renderAdmOutline(con.outline);
+}
+
+function saveOutline() {
+  const con = loadContent();
+  document.querySelectorAll('#adm-outline-list input,#adm-outline-list textarea').forEach(inp => {
+    const i = inp.dataset.oi; const f = inp.dataset.of;
+    if (i !== undefined && f) con.outline[parseInt(i)][f] = inp.value.trim();
+  });
+  saveContent(con);
+  renderOutline();
+  toast('✅ Program outline saved!');
+}
+
+// ── ANNOUNCEMENTS ──
+function renderAdmAnnouncements(anns) {
+  document.getElementById('adm-ann-list').innerHTML = anns.map((a,i) => `
+    <div class="adm-list-item">
+      <div class="adm-list-item-header"><span>Announcement ${i+1}</span><button class="adm-del-btn" onclick="deleteItem('announcements',${i})">🗑 Remove</button></div>
+      <div class="adm-grid">
+        <div class="adm-field"><label>Icon (emoji)</label><input type="text" data-ai="${i}" data-af="icon" value="${esc(a.icon)}" maxlength="4"></div>
+        <div class="adm-field"><label>Left Border Color</label><input type="text" data-ai="${i}" data-af="borderColor" value="${esc(a.borderColor)}" placeholder="#1E5FA8"></div>
+        <div class="adm-field"><label>Title</label><input type="text" data-ai="${i}" data-af="title" value="${esc(a.title)}"></div>
+        <div class="adm-field"><label>Meta (date/priority)</label><input type="text" data-ai="${i}" data-af="meta" value="${esc(a.meta)}"></div>
+      </div>
+      <div class="adm-field" style="margin-top:8px"><label>Body Text</label><textarea data-ai="${i}" data-af="body" rows="2">${esc(a.body)}</textarea></div>
+    </div>`).join('');
+}
+
+function addAnnItem() {
+  const con = loadContent();
+  con.announcements.push({ icon:'📌', borderColor:'#1E5FA8', title:'New Announcement', body:'Add content here.', meta:'Today' });
+  saveContent(con);
+  renderAdmAnnouncements(con.announcements);
+}
+
+function saveAnnouncements() {
+  const con = loadContent();
+  document.querySelectorAll('#adm-ann-list input,#adm-ann-list textarea').forEach(inp => {
+    const i = inp.dataset.ai; const f = inp.dataset.af;
+    if (i !== undefined && f) con.announcements[parseInt(i)][f] = inp.value.trim();
+  });
+  saveContent(con);
+  renderAnnouncements();
+  toast('✅ Announcements saved!');
+}
+
+// ── EVENTS ──
+function renderAdmEvents(events) {
+  document.getElementById('adm-events-list').innerHTML = events.map((e,i) => `
+    <div class="adm-list-item">
+      <div class="adm-list-item-header"><span>Event ${i+1}</span><button class="adm-del-btn" onclick="deleteItem('events',${i})">🗑 Remove</button></div>
+      <div class="adm-grid">
+        <div class="adm-field"><label>Day (number)</label><input type="text" data-evi="${i}" data-evf="day" value="${esc(e.day)}" placeholder="28"></div>
+        <div class="adm-field"><label>Month (3 letters)</label><input type="text" data-evi="${i}" data-evf="month" value="${esc(e.month)}" placeholder="Mar"></div>
+        <div class="adm-field"><label>Title</label><input type="text" data-evi="${i}" data-evf="title" value="${esc(e.title)}"></div>
+        <div class="adm-field"><label>Meta (time/location/status)</label><input type="text" data-evi="${i}" data-evf="meta" value="${esc(e.meta)}" placeholder="🕘 9:00 AM | 📍 Main Hall | ✅ Done"></div>
+      </div>
+      <div class="adm-field" style="margin-top:8px"><label>Description</label><textarea data-evi="${i}" data-evf="body" rows="2">${esc(e.body)}</textarea></div>
+      <div class="img-upload-row">
+        <label class="img-upload-btn">
+          📷 Upload Image
+          <input type="file" accept="image/*" onchange="handleImgUpload(this,'events',${i})">
+        </label>
+        ${e.img
+          ? `<img class="img-preview" src="${e.img}" alt="preview">
+             <button class="img-clear-btn" onclick="clearImg('events',${i})">✕ Remove</button>`
+          : `<div class="img-preview-placeholder">🖼️</div><span style="font-size:11px;color:rgba(255,255,255,.35);">No image — optional</span>`}
+      </div>
+    </div>`).join('');
+}
+
+function addEventItem() {
+  const con = loadContent();
+  con.events.push({ day:'01', month:'Jan', title:'New Event', body:'Describe the event here.', meta:'🕘 9:00 AM | 📍 Venue | ⏳ Upcoming' });
+  saveContent(con);
+  renderAdmEvents(con.events);
+}
+
+function saveEvents() {
+  const con = loadContent();
+  document.querySelectorAll('#adm-events-list input,#adm-events-list textarea').forEach(inp => {
+    const i = inp.dataset.evi; const f = inp.dataset.evf;
+    if (i !== undefined && f) con.events[parseInt(i)][f] = inp.value.trim();
+  });
+  saveContent(con);
+  renderEventsList();
+  toast('✅ Events saved!');
+}
+
+// ── QUIZZES ──
+function renderAdmQuizzes(quizzes) {
+  document.getElementById('adm-quiz-list').innerHTML = quizzes.map((q,i) => `
+    <div class="adm-list-item">
+      <div class="adm-list-item-header"><span>Quiz ${i+1}</span><button class="adm-del-btn" onclick="deleteItem('quizzes',${i})">🗑 Remove</button></div>
+      <div class="adm-grid">
+        <div class="adm-field"><label>Icon (emoji)</label><input type="text" data-qi="${i}" data-qf="icon" value="${esc(q.icon)}" maxlength="4"></div>
+        <div class="adm-field"><label>Title</label><input type="text" data-qi="${i}" data-qf="title" value="${esc(q.title)}"></div>
+        <div class="adm-field"><label>Duration (mins)</label><input type="text" data-qi="${i}" data-qf="mins" value="${esc(q.mins)}"></div>
+        <div class="adm-field"><label>No. of Questions</label><input type="text" data-qi="${i}" data-qf="questions" value="${esc(q.questions)}"></div>
+        <div class="adm-field"><label>Status</label>
+          <select data-qi="${i}" data-qf="status">
+            <option value="open" ${q.status==='open'?'selected':''}>🟢 Open</option>
+            <option value="upcoming" ${q.status==='upcoming'?'selected':''}>🟡 Upcoming</option>
+            <option value="closed" ${q.status==='closed'?'selected':''}>⚫ Closed</option>
+          </select>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function addQuizItem() {
+  const con = loadContent();
+  con.quizzes.push({ icon:'📝', title:'New Quiz', mins:'10', questions:'8', status:'upcoming' });
+  saveContent(con);
+  renderAdmQuizzes(con.quizzes);
+}
+
+function saveQuizzes() {
+  const con = loadContent();
+  document.querySelectorAll('#adm-quiz-list input,#adm-quiz-list select').forEach(inp => {
+    const i = inp.dataset.qi; const f = inp.dataset.qf;
+    if (i !== undefined && f) con.quizzes[parseInt(i)][f] = inp.value.trim();
+  });
+  saveContent(con);
+  renderQuizzes();
+  toast('✅ Quizzes saved!');
+}
+
+// ── IMAGE UPLOAD HELPER ──
+// Converts the selected file to base64 and saves it in content storage
+function handleImgUpload(input, section, index) {
+  const file = input.files[0];
+  if (!file) return;
+
+  // Warn if image is very large (base64 can bloat localStorage)
+  if (file.size > 500 * 1024) {
+    const proceed = confirm(
+      `This image is ${Math.round(file.size/1024)}KB. Large images use more storage.\n\n` +
+      `For best results, use images under 500KB.\n\nContinue anyway?`
+    );
+    if (!proceed) { input.value = ''; return; }
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const con = loadContent();
+    con[section][index].img = e.target.result; // base64 data URL
+    saveContent(con);
+    // Re-render the admin list to show the preview
+    const adminRenders = {
+      news: renderAdmNews,
+      events: renderAdmEvents,
+    };
+    if (adminRenders[section]) adminRenders[section](con[section]);
+    // Also update the public-facing view
+    if (section === 'news')   renderNews();
+    if (section === 'events') renderEventsList();
+    toast(`✅ Image uploaded for ${section === 'news' ? 'News' : 'Event'} item ${index + 1}`);
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImg(section, index) {
+  const con = loadContent();
+  delete con[section][index].img;
+  saveContent(con);
+  const adminRenders = { news: renderAdmNews, events: renderAdmEvents };
+  if (adminRenders[section]) adminRenders[section](con[section]);
+  if (section === 'news')   renderNews();
+  if (section === 'events') renderEventsList();
+  toast('🗑 Image removed');
+}
+
+// ── DELETE HELPER ──
+function deleteItem(section, index) {
+  if (!confirm('Remove this item?')) return;
+  const con = loadContent();
+  con[section].splice(index, 1);
+  saveContent(con);
+  const renders = { news:renderAdmNews, outline:renderAdmOutline, announcements:renderAdmAnnouncements, events:renderAdmEvents, quizzes:renderAdmQuizzes };
+  renders[section](con[section]);
+}
+
+// ══════════════════════════════════════════════════════
+//  RENDER FUNCTIONS (public-facing)
+// ══════════════════════════════════════════════════════
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderPresentations() {
+  const con = loadContent();
+  document.getElementById('presentationsGrid').innerHTML = con.topics.map((t,i) => {
+    const num = i + 1;
+    const link = t.link || '';
+    return `<div class="topic-card" onclick="${link ? `window.open('${link}','_blank')` : `noLink(${num})`}">
+      <div class="topic-icon">${t.icon}</div>
+      <div class="topic-num">Topic ${String(num).padStart(2,'0')}</div>
+      <h4>${esc(t.title)}</h4>
+      <p>${esc(t.sub)}</p>
+      ${link ? `<div class="topic-link-icon">🔗 Open Presentation</div>` : `<span class="no-link-badge">Link not set</span>`}
+    </div>`;
+  }).join('');
+}
+
+function noLink(n) { alert(`No presentation link set for Topic ${n} yet.`); }
+
+function renderNews() {
+  const con = loadContent();
+  document.getElementById('newsGrid').innerHTML = con.news.map(n => `
+    <div class="news-card">
+      <div class="news-card-img" style="${n.img ? 'padding:0;overflow:hidden;' : 'background:'+n.bg}">
+        ${n.img
+          ? `<img src="${n.img}" alt="${esc(n.title)}" style="width:100%;height:100%;object-fit:cover;">`
+          : n.icon}
+      </div>
+      <div class="news-card-body">
+        <span class="news-tag" style="background:${n.tagBg||'rgba(30,95,168,.1)'};color:${n.tagColor||'#1E5FA8'}">${esc(n.tag)}</span>
+        <h4>${esc(n.title)}</h4>
+        <p>${esc(n.body)}</p>
+        <div class="news-date">📅 ${esc(n.date)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderOutline() {
+  const con = loadContent();
+  document.getElementById('outlineList').innerHTML = con.outline.map(o => `
+    <div class="outline-item">
+      <div class="day-tag">${esc(o.day)}</div>
+      <h4>${esc(o.title)}</h4>
+      <p>${esc(o.body)}</p>
+    </div>`).join('');
+}
+
+function renderAnnouncements() {
+  const con = loadContent();
+  document.getElementById('annList').innerHTML = con.announcements.map(a => `
+    <div class="announcement-item" style="border-left-color:${a.borderColor}">
+      <div class="ann-icon">${a.icon}</div>
+      <div class="ann-body">
+        <h4>${esc(a.title)}</h4>
+        <p>${esc(a.body)}</p>
+        <div class="ann-meta">📅 ${esc(a.meta)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderEventsList() {
+  const con = loadContent();
+  document.getElementById('eventsList').innerHTML = con.events.map(e => {
+    const parts = (e.meta||'').split('|').map(s => `<span>${s.trim()}</span>`).join('');
+    const imgBanner = e.img
+      ? `<div style="width:72px;height:72px;border-radius:10px;overflow:hidden;flex-shrink:0;">
+           <img src="${e.img}" alt="${esc(e.title)}" style="width:100%;height:100%;object-fit:cover;">
+         </div>`
+      : `<div class="event-date-block"><div class="ed-day">${esc(e.day)}</div><div class="ed-month">${esc(e.month)}</div></div>`;
+    return `<div class="event-item">
+      ${imgBanner}
+      <div class="event-body">
+        ${e.img ? `<div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">${esc(e.day)} ${esc(e.month)}</div>` : ''}
+        <h4>${esc(e.title)}</h4>
+        <p>${esc(e.body)}</p>
+        <div class="event-meta">${parts}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderQuizzes() {
+  const con = loadContent();
+  const statusLabels = { open:'🟢 Open', upcoming:'🟡 Upcoming', closed:'⚫ Not Yet Open' };
+  document.getElementById('quizGrid').innerHTML = con.quizzes.map(q => `
+    <div class="quiz-card">
+      <div class="quiz-header"><div class="quiz-icon">${q.icon}</div><h4>${esc(q.title)}</h4></div>
+      <div class="quiz-meta"><span>⏱ ${esc(q.mins)} mins</span><span>❓ ${esc(q.questions)} questions</span></div>
+      <span class="quiz-badge ${q.status}">${statusLabels[q.status]||q.status}</span>
+    </div>`).join('');
+}
+
+const ASSESSMENT_DEFS = [
+  { key:'formSelfPre',  icon:'📝', bg:'rgba(30,95,168,.1)',  title:'Self Pre-Assessment',        desc:'Complete before training begins — establishes your baseline.' },
+  { key:'formSelfPost', icon:'🔄', bg:'rgba(74,222,128,.12)',title:'Self Post-Assessment',        desc:'Complete after all modules — reflect on your growth.' },
+  { key:'formExam',     icon:'🏆', bg:'rgba(239,68,68,.1)',  title:'End of Training Examination', desc:'Final exam — required for certification.' },
+];
+
+const FAC_ASSESSMENT_DEFS = [
+  { key:'formFacPre',  icon:'👨‍🏫', bg:'rgba(244,165,34,.1)', title:'Facilitator Pre-Assessment',  desc:'Facilitator evaluation of participant baseline at training start.' },
+  { key:'formFacPost', icon:'✅', bg:'rgba(124,58,237,.1)', title:'Facilitator Post-Assessment', desc:'Final facilitator evaluation of participant learning outcomes.' },
+];
+
+function renderAssessmentForms() {
+  const cfg = loadCfg();
+  document.getElementById('assessmentFormsGrid').innerHTML = ASSESSMENT_DEFS.map(def => {
+    const link = cfg[def.key] || null;
+    return `<div class="aform-card">
+      <div class="aform-header">
+        <div class="aform-icon" style="background:${def.bg}">${def.icon}</div>
+        <div><h4>${def.title}</h4><p>${def.desc}</p></div>
+      </div>
+      ${link
+        ? `<a class="aform-btn primary" href="${link}" target="_blank" rel="noopener">${def.icon} Open Google Form →</a>
+           <p style="font-size:11px;color:var(--slate);text-align:center;">After submitting, your coordinator updates your status in the sheet.</p>`
+        : `<div class="no-link-notice">⚙️ Form link not yet configured by admin</div>`}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  PARTICIPANT LOOKUP
+// ══════════════════════════════════════════════════════
+async function lookupParticipant() {
+  const tel = document.getElementById('lookupTel').value.trim().replace(/\s/g,'');
+  const errEl = document.getElementById('lookupError');
+  const loadEl = document.getElementById('lookupLoading');
+  const resEl  = document.getElementById('resultCard');
+  errEl.style.display = 'none'; resEl.style.display = 'none'; loadEl.style.display = 'none';
+  if (!tel) { errEl.textContent = '⚠️ Please enter your telephone number.'; errEl.style.display = 'block'; return; }
+  const cfg = loadCfg();
+  if (!cfg.sheetUrl) { errEl.innerHTML = '⚙️ Portal not yet connected to a Google Sheet.<br><small>Ask your coordinator to complete the setup.</small>'; errEl.style.display = 'block'; return; }
+  loadEl.style.display = 'block';
+  try {
+    const res = await fetch(cfg.sheetUrl + '?tel=' + encodeURIComponent(tel));
+    const data = await res.json();
+    loadEl.style.display = 'none';
+    if (data.status === 'not_found') { errEl.textContent = '❌ No participant found with that telephone number. Please check and try again.'; errEl.style.display = 'block'; return; }
+    if (data.status === 'ok' && data.participant) renderResult(data.participant);
+  } catch(e) {
+    loadEl.style.display = 'none';
+    errEl.innerHTML = '🌐 Could not connect to the training database.<br><small>Check your internet connection or contact your coordinator.</small>';
+    errEl.style.display = 'block';
+  }
+}
+
+function renderResult(p) {
+  document.getElementById('resInitial').textContent = (p.name||'??').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('resName').textContent  = p.name || '—';
+  document.getElementById('resDept').textContent  = (p.facility || p.department || '—') + ' Facility';
+  document.getElementById('resTel').textContent   = p.telephone || '—';
+  document.getElementById('resSPre').innerHTML  = statusAndScore(p.selfPre,  p.selfPreScore,  null);
+  document.getElementById('resFPre').innerHTML  = statusAndScore(p.facPre,   p.facPreScore,   null);
+  document.getElementById('resSPost').innerHTML = statusAndScore(p.selfPost, p.selfPostScore, null);
+  document.getElementById('resFPost').innerHTML = statusAndScore(p.facPost,  p.facPostScore,  null);
+  document.getElementById('resExam').innerHTML  = statusAndScore(p.exam,     p.examScore,     p.examTotal);
+
+  // Render daily report badges (Day 2 – Day 9)
+  const DAYS = [2,3,4,5,6,7,8,9];
+  document.getElementById('resDailyReport').innerHTML = DAYS.map(d => {
+    const key  = 'day' + d + 'Report';
+    const val  = String(p[key] || '').trim().toLowerCase();
+    const done = val === 'submitted';
+    return `<div class="day-badge ${done ? 'submitted' : 'not-submitted'}">
+      <div class="day-num">Day ${d}</div>
+      <div class="day-icon">${done ? '✅' : '❌'}</div>
+      <div class="day-status">${done ? 'Submitted' : 'Not Submitted'}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('resultCard').style.display = 'block';
+}
+
+function statusAndScore(status, score, total) {
+  const labels = { completed:'Completed', pending:'In Progress', 'not-started':'Not Started' };
+  const st = status || 'not-started';
+  let html = `<span class="status-pill ${st}"><span class="status-dot ${st}"></span>${labels[st]||st}</span>`;
+  // Show score badge for any status that has a score value (not just completed)
+  if (score !== undefined && score !== '' && score !== null) {
+    const num = parseFloat(score);
+    const tot = total ? parseFloat(total) : null;
+    if (!isNaN(num)) {
+      const pct  = tot ? Math.round((num / tot) * 100) : Math.round(num);
+      const pass = pct >= 50;
+      const pctColor = pct>=80?'#16a34a':pct>=60?'#2D7DD2':pct>=50?'#d97706':'#dc2626';
+      const pctBg    = pct>=80?'rgba(74,222,128,.15)':pct>=60?'rgba(45,125,210,.12)':pct>=50?'rgba(251,191,36,.15)':'rgba(239,68,68,.1)';
+      html += ` <span class="score-badge" style="background:${pctBg};color:${pctColor};font-size:13px;font-weight:800;">📊 ${pct}%</span>`;
+      if (st === 'completed') {
+        html += pass ? `<span class="pass-badge">✅ PASS</span>` : `<span class="fail-badge">❌ FAIL</span>`;
+      }
+    }
+  }
+  return html;
+}
+
+// ══════════════════════════════════════════════════════
+//  FACILITATOR PASSWORD & TAB
+// ══════════════════════════════════════════════════════
+const FAC_PASSWORD = 'FAC2026';
+let facUnlocked = false;
+let allParticipants = []; // cached from sheet for score table
+
+function handleFacTab(btn) {
+  // Always switch the nav highlight
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-facilitators').classList.add('active');
+
+  if (!facUnlocked) {
+    document.getElementById('facLockedView').style.display = 'flex';
+    document.getElementById('facContent').classList.remove('show');
+  } else {
+    showFacContent();
+  }
+}
+
+function handleFacTabContent() {
+  // Called from the "Enter Password" button inside the locked view
+  document.getElementById('facPwModal').classList.add('show');
+  document.getElementById('facPwInput').value = '';
+  document.getElementById('facPwError').textContent = '';
+  setTimeout(() => document.getElementById('facPwInput').focus(), 100);
+}
+
+function checkFacPassword() {
+  const val = document.getElementById('facPwInput').value;
+  if (val === FAC_PASSWORD) {
+    facUnlocked = true;
+    document.getElementById('facPwModal').classList.remove('show');
+    document.getElementById('facSessionStrip').classList.add('show');
+    showFacContent();
+  } else {
+    document.getElementById('facPwError').textContent = '❌ Incorrect password. Please try again.';
+    document.getElementById('facPwInput').value = '';
+    document.getElementById('facPwInput').focus();
+  }
+}
+
+function closeFacModal() {
+  document.getElementById('facPwModal').classList.remove('show');
+}
+
+function toggleFacPw() {
+  const inp = document.getElementById('facPwInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function lockFac() {
+  facUnlocked = false;
+  document.getElementById('facSessionStrip').classList.remove('show');
+  document.getElementById('facContent').classList.remove('show');
+  document.getElementById('facLockedView').style.display = 'flex';
+  allParticipants = [];
+}
+
+function showFacContent() {
+  document.getElementById('facLockedView').style.display = 'none';
+  document.getElementById('facContent').classList.add('show');
+  renderFacAssessmentForms();
+  loadFacScores();
+  // Initialise report table loading state
+  const rc = document.getElementById('reportTableContainer');
+  if (rc) rc.innerHTML = `<div class="score-table-loading"><span class="spinner"></span> Loading participant data…</div>`;
+}
+
+// ── Render facilitator-only assessment forms ──
+function renderFacAssessmentForms() {
+  const cfg = loadCfg();
+  document.getElementById('facAssessmentFormsGrid').innerHTML = FAC_ASSESSMENT_DEFS.map(def => {
+    const link = cfg[def.key] || null;
+    return `<div class="aform-card">
+      <div class="aform-header">
+        <div class="aform-icon" style="background:${def.bg}">${def.icon}</div>
+        <div><h4>${def.title}</h4><p>${def.desc}</p></div>
+      </div>
+      ${link
+        ? `<a class="aform-btn primary" href="${link}" target="_blank" rel="noopener">${def.icon} Open Google Form →</a>
+           <p style="font-size:11px;color:var(--slate);text-align:center;">Enter the participant's telephone number in the form as their ID.</p>`
+        : `<div class="no-link-notice">⚙️ Form link not yet configured — add via ⚙️ Admin Config → Integrations</div>`}
+    </div>`;
+  }).join('');
+}
+
+// ── Fetch all participants from sheet for score table ──
+async function loadFacScores() {
+  const cfg = loadCfg();
+  const container = document.getElementById('scoreTableContainer');
+
+  if (!cfg.sheetUrl) {
+    container.innerHTML = `<div class="score-table-loading">⚙️ Google Sheet not connected. Ask your coordinator to configure it in Admin Config.</div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="score-table-loading"><span class="spinner"></span> Loading participant scores…</div>`;
+
+  try {
+    // Fetch all participants via the sheet URL with ?all=1 flag
+    const res  = await fetch(cfg.sheetUrl + '?all=1');
+    const data = await res.json();
+
+    if (data.status === 'ok' && data.participants) {
+      allParticipants = data.participants;
+      updateFacStats(data.stats || {});
+      renderScoreTable(allParticipants);
+      renderReportTable(allParticipants); // populate the daily report tab too
+    } else if (data.status === 'ok' && data.stats) {
+      // Older Apps Script — show notice to upgrade
+      updateFacStats(data.stats);
+      container.innerHTML = `<div class="score-table-loading">
+        ⚠️ Your Apps Script needs a small update to show the full participant table.<br>
+        <small style="color:var(--slate-light);margin-top:6px;display:block;">
+          In Extensions → Apps Script, add <strong>?all=1</strong> handling to doGet.<br>
+          See the Setup Guide in Admin Config for the updated script.
+        </small>
+      </div>`;
+    } else {
+      container.innerHTML = `<div class="score-table-loading">❌ Could not load participant data. Check your sheet connection.</div>`;
+    }
+  } catch(e) {
+    container.innerHTML = `<div class="score-table-loading">🌐 Could not connect to the Google Sheet. Check your internet connection.</div>`;
+  }
+}
+
+function updateFacStats(s) {
+  document.getElementById('fstat-total').textContent   = s.total    || 40;
+  document.getElementById('fstat-selfpre').textContent  = s.selfPre  || '—';
+  document.getElementById('fstat-selfpost').textContent = s.selfPost || '—';
+  document.getElementById('fstat-facpre').textContent   = s.facPre   || '—';
+  document.getElementById('fstat-facpost').textContent  = s.facPost  || '—';
+  document.getElementById('fstat-exam').textContent     = s.exam     || '—';
+}
+
+const REPORT_DAYS = [2,3,4,5,6,7,8,9];
+
+function renderScoreTable(participants) {
+  if (!participants || participants.length === 0) {
+    document.getElementById('scoreTableContainer').innerHTML =
+      `<div class="score-table-loading">No participant data found in the sheet.</div>`;
+    return;
+  }
+
+  const rows = participants.map((p, i) => {
+    const num = String(i + 1).padStart(2, '0');
+    // Daily report summary for score table (read-only dots)
+    const dayDots = REPORT_DAYS.map(d => {
+      const val  = String(p['day'+d+'Report'] || '').trim().toLowerCase();
+      const done = val === 'submitted';
+      return `<td><span title="Day ${d}" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${done ? '#4ade80' : '#fca5a5'};border:1px solid ${done ? '#16a34a' : '#dc2626'};"></span></td>`;
+    }).join('');
+    return `<tr data-name="${esc((p.name||'').toLowerCase())}" data-dept="${esc((p.facility||p.department||'').toLowerCase())}">
+      <td style="color:var(--slate-light);font-size:11px;font-weight:600;">${num}</td>
+      <td class="name-cell">${esc(p.name || '—')}</td>
+      <td class="dept-cell">${esc(p.facility || p.department || '—')}</td>
+      <td>${scorePct(p.selfPreScore,  null)}</td>
+      <td>${scorePct(p.facPreScore,   null)}</td>
+      <td>${scorePct(p.selfPostScore, null)}</td>
+      <td>${scorePct(p.facPostScore,  null)}</td>
+      <td>${scorePct(p.examScore,     p.examTotal)}</td>
+      ${dayDots}
+    </tr>`;
+  }).join('');
+
+  const dayHeaders = REPORT_DAYS.map(d => `<th title="Day ${d} Report">D${d}</th>`).join('');
+
+  document.getElementById('scoreTableContainer').innerHTML = `
+    <div style="overflow-x:auto;">
+      <table class="score-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Facility</th>
+            <th>📝 Self Pre</th>
+            <th>👨‍🏫 Fac Pre</th>
+            <th>🔄 Self Post</th>
+            <th>✅ Fac Post</th>
+            <th>🏆 Exam</th>
+            <th colspan="${REPORT_DAYS.length}" style="text-align:center;background:rgba(30,95,168,.04);">📅 Daily Reports (D2–D9)</th>
+          </tr>
+          <tr style="border-bottom:2px solid var(--border);">
+            <th colspan="8"></th>
+            ${dayHeaders}
+          </tr>
+        </thead>
+        <tbody id="scoreTableBody">${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function scorePct(score, total) {
+  if (score === undefined || score === null || score === '') {
+    return `<span class="tbl-pct none">—</span>`;
+  }
+  const num = parseFloat(score);
+  if (isNaN(num)) return `<span class="tbl-pct none">—</span>`;
+  const tot = total ? parseFloat(total) : null;
+  const pct = tot ? Math.round((num / tot) * 100) : Math.round(num);
+  const cls = pct >= 80 ? 'high' : pct >= 60 ? 'mid' : pct >= 50 ? 'low' : 'fail';
+  return `<span class="tbl-pct ${cls}">${pct}%</span>`;
+}
+
+function filterScoreTable() {
+  const q = (document.getElementById('scoreSearchInput').value || '').toLowerCase().trim();
+  const body = document.getElementById('scoreTableBody');
+  if (!body) return;
+  Array.from(body.querySelectorAll('tr')).forEach(row => {
+    const name = row.dataset.name || '';
+    const dept = row.dataset.dept || '';
+    row.style.display = (!q || name.includes(q) || dept.includes(q)) ? '' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  DAILY REPORT TRACKER
+// ══════════════════════════════════════════════════════
+
+// In-memory state: { 'telephone': { day2: true/false, day3: ... } }
+let reportState = {};
+let reportDirty = false; // tracks unsaved changes
+
+function renderReportTable(participants) {
+  if (!participants || participants.length === 0) {
+    document.getElementById('reportTableContainer').innerHTML =
+      `<div class="score-table-loading">No participant data found. Load scores first.</div>`;
+    return;
+  }
+
+  // Initialise reportState from sheet data
+  participants.forEach(p => {
+    const tel = String(p.telephone || '').trim();
+    if (!tel) return;
+    if (!reportState[tel]) reportState[tel] = {};
+    REPORT_DAYS.forEach(d => {
+      // Only initialise from sheet if not already edited in this session
+      if (reportState[tel]['day'+d] === undefined) {
+        const val = String(p['day'+d+'Report'] || '').trim().toLowerCase();
+        reportState[tel]['day'+d] = (val === 'submitted');
+      }
+    });
+  });
+
+  const dayHeaders = REPORT_DAYS.map(d =>
+    `<th>Day ${d}</th>`
+  ).join('');
+
+  const rows = participants.map((p, i) => {
+    const tel = String(p.telephone || '').trim();
+    const num = String(i + 1).padStart(2, '0');
+    const dayCells = REPORT_DAYS.map(d => {
+      const done = reportState[tel] && reportState[tel]['day'+d];
+      return `<td>
+        <span class="day-tick ${done ? 'done' : 'undone'}"
+              data-tel="${esc(tel)}"
+              data-day="${d}"
+              onclick="toggleDayReport(this)"
+              title="${done ? 'Submitted — click to undo' : 'Not submitted — click to mark submitted'}">
+          ${done ? '✓' : '✗'}
+        </span>
+      </td>`;
+    }).join('');
+
+    return `<tr data-rname="${esc((p.name||'').toLowerCase())}">
+      <td style="color:var(--slate-light);font-size:11px;font-weight:600;padding-left:16px;">${num}</td>
+      <td class="name-col">${esc(p.name || '—')}</td>
+      <td class="fac-col">${esc(p.facility || p.department || '—')}</td>
+      ${dayCells}
+    </tr>`;
+  }).join('');
+
+  document.getElementById('reportTableContainer').innerHTML = `
+    <div style="overflow-x:auto;">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="padding-left:16px;">#</th>
+            <th class="name-col">Participant Name</th>
+            <th class="name-col">Facility</th>
+            ${dayHeaders}
+          </tr>
+        </thead>
+        <tbody id="reportTableBody">${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function toggleDayReport(el) {
+  const tel = el.dataset.tel;
+  const day = parseInt(el.dataset.day);
+  if (!reportState[tel]) reportState[tel] = {};
+  const current = reportState[tel]['day'+day] || false;
+  reportState[tel]['day'+day] = !current;
+
+  // Update the tick UI instantly
+  if (!current) {
+    el.classList.remove('undone');
+    el.classList.add('done');
+    el.textContent = '✓';
+    el.title = 'Submitted — click to undo';
+  } else {
+    el.classList.remove('done');
+    el.classList.add('undone');
+    el.textContent = '✗';
+    el.title = 'Not submitted — click to mark submitted';
+  }
+
+  // Mark dirty
+  reportDirty = true;
+  document.getElementById('unsavedNote').classList.add('show');
+}
+
+function filterReportTable() {
+  const q = (document.getElementById('reportSearchInput').value || '').toLowerCase().trim();
+  const body = document.getElementById('reportTableBody');
+  if (!body) return;
+  Array.from(body.querySelectorAll('tr')).forEach(row => {
+    const name = row.dataset.rname || '';
+    row.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
+}
+
+async function saveReportToSheet() {
+  if (!reportDirty) { toast('No changes to save.'); return; }
+  const cfg = loadCfg();
+  if (!cfg.sheetUrl) {
+    toast('⚠️ No Google Sheet connected. Configure it in Admin Config first.');
+    return;
+  }
+
+  // Build payload — all report states
+  const payload = Object.entries(reportState).map(([tel, days]) => ({
+    telephone: tel,
+    day2Report:  days.day2  ? 'submitted' : 'not-submitted',
+    day3Report:  days.day3  ? 'submitted' : 'not-submitted',
+    day4Report:  days.day4  ? 'submitted' : 'not-submitted',
+    day5Report:  days.day5  ? 'submitted' : 'not-submitted',
+    day6Report:  days.day6  ? 'submitted' : 'not-submitted',
+    day7Report:  days.day7  ? 'submitted' : 'not-submitted',
+    day8Report:  days.day8  ? 'submitted' : 'not-submitted',
+    day9Report:  days.day9  ? 'submitted' : 'not-submitted',
+  }));
+
+  try {
+    // POST to Apps Script
+    const res = await fetch(cfg.sheetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' }, // text/plain avoids CORS preflight
+      body: JSON.stringify({ action: 'updateReports', reports: payload })
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      reportDirty = false;
+      document.getElementById('unsavedNote').classList.remove('show');
+      const now = new Date();
+      document.getElementById('lastSavedTime').textContent =
+        now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      toast('✅ Daily report statuses saved to Google Sheet!');
+    } else {
+      toast('❌ Save failed: ' + (data.message || 'Unknown error'));
+    }
+  } catch(e) {
+    // If POST fails (CORS), fall back to showing a manual instruction
+    toast('⚠️ Could not reach sheet. Update manually: see columns day2Report–day9Report.');
+    console.warn('saveReportToSheet error:', e.message);
+  }
+}
+
+
+async function loadStats() {
+  const cfg = loadCfg();
+  if (!cfg.sheetUrl) {
+    // No sheet connected — charts stay at 0, show a note
+    document.getElementById('stat-pre').textContent  = '—';
+    document.getElementById('stat-post').textContent = '—';
+    document.getElementById('stat-exam').textContent = '—';
+    return;
+  }
+  try {
+    const res  = await fetch(cfg.sheetUrl);
+    const data = await res.json();
+    if (data.status === 'ok' && data.stats) {
+      const s = data.stats;
+      // Stat cards — show 0 explicitly when nothing completed (not '—')
+      document.getElementById('stat-pre').textContent  = Number(s.selfPre)  || 0;
+      document.getElementById('stat-post').textContent = Number(s.selfPost) || 0;
+      document.getElementById('stat-exam').textContent = Number(s.exam)     || 0;
+      updateCharts(s);
+    }
+  } catch(e) {
+    // Silently keep charts at 0 — CORS or network issue
+    console.warn('loadStats fetch error:', e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════════════
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  btn.classList.add('active');
+}
+function switchSubtab(parent, sub, btn) {
+  const tabEl = document.getElementById('tab-' + parent);
+  tabEl.querySelectorAll('.subpage').forEach(p => p.classList.remove('active'));
+  tabEl.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(parent + '-' + sub).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════════
+function toast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1E5FA8;color:white;padding:12px 20px;border-radius:10px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(10,22,40,.3);animation:fadeUp .3s ease;';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ══════════════════════════════════════════════════════
+//  CHARTS
+// ══════════════════════════════════════════════════════
+let charts = {};
+const TOTAL = 40;
+
+// Colours per assessment
+const DONUT_COLORS = {
+  selfPre:  { done:'rgba(30,95,168,.9)',   left:'rgba(30,95,168,.12)'  },
+  facPre:   { done:'rgba(244,165,34,.9)',  left:'rgba(244,165,34,.12)' },
+  selfPost: { done:'rgba(45,125,210,.9)',  left:'rgba(45,125,210,.12)' },
+  facPost:  { done:'rgba(124,58,237,.9)',  left:'rgba(124,58,237,.12)' },
+  exam:     { done:'rgba(74,222,128,.9)',  left:'rgba(74,222,128,.12)' },
+};
+
+function makeDonut(canvasId, key, completed) {
+  const pct = Math.round((completed / TOTAL) * 100);
+  const c   = DONUT_COLORS[key];
+  document.getElementById('center-' + key).textContent = pct + '%';
+  document.getElementById('meta-'   + key).textContent = completed + ' of ' + TOTAL + ' completed';
+  return new Chart(document.getElementById(canvasId), {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [completed, TOTAL - completed],
+        backgroundColor: [c.done, c.left],
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      responsive: false,
+      cutout: '72%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.dataIndex === 0 ? ` ${ctx.raw} completed` : ` ${ctx.raw} remaining` } }
+      },
+      animation: { animateRotate: true, duration: 800 }
+    }
+  });
+}
+
+function updateCharts(s) {
+  const total = s.total || TOTAL;
+  const keys = ['selfPre','facPre','selfPost','facPost','exam'];
+  keys.forEach(k => {
+    const val = Number(s[k]) || 0;          // 0 when absent — no fake fallback
+    const pct = Math.round((val / total) * 100);
+    if (charts['d_'+k]) {
+      charts['d_'+k].data.datasets[0].data = [val, total - val];
+      charts['d_'+k].update();
+      document.getElementById('center-' + k).textContent = pct + '%';
+      document.getElementById('meta-'   + k).textContent = val + ' of ' + total + ' completed';
+    }
+  });
+  if (charts.completion) {
+    // Always use real number — never fall back to a fake value
+    charts.completion.data.datasets[0].data = [
+      Math.round((Number(s.selfPre)  || 0) / total * 100),
+      Math.round((Number(s.facPre)   || 0) / total * 100),
+      Math.round((Number(s.selfPost) || 0) / total * 100),
+      Math.round((Number(s.facPost)  || 0) / total * 100),
+      Math.round((Number(s.exam)     || 0) / total * 100),
+    ];
+    charts.completion.update();
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderPresentations();
+  renderNews();
+  renderOutline();
+  renderAnnouncements();
+  renderEventsList();
+  renderQuizzes();
+  renderAssessmentForms();
+
+  // Init all charts with 0 / empty — real data loaded from sheet after
+  charts.d_selfPre  = makeDonut('donut-selfPre',  'selfPre',  0);
+  charts.d_facPre   = makeDonut('donut-facPre',   'facPre',   0);
+  charts.d_selfPost = makeDonut('donut-selfPost',  'selfPost', 0);
+  charts.d_facPost  = makeDonut('donut-facPost',   'facPost',  0);
+  charts.d_exam     = makeDonut('donut-exam',      'exam',     0);
+
+  charts.completion = new Chart(document.getElementById('completionChart'), {
+    type:'bar',
+    data:{ labels:['Self Pre','Fac. Pre','Self Post','Fac. Post','Final Exam'],
+      datasets:[{ label:'Completed (%)', data:[0,0,0,0,0],
+        backgroundColor:['rgba(30,95,168,.85)','rgba(45,125,210,.85)','rgba(79,195,247,.85)','rgba(244,165,34,.85)','rgba(74,222,128,.85)'],
+        borderRadius:6, borderSkipped:false }] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${ctx.raw}% of 40`}} },
+      scales:{ y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}},
+               x:{ticks:{font:{size:10}},grid:{display:false}} } }
+  });
+
+  // Load real data from sheet AFTER charts are initialised
+  loadStats();
+});
+</script>
+</body>
+</html>
