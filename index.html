@@ -390,6 +390,165 @@ main{max-width:1280px;margin:0 auto;padding:24px 18px 60px;}
 .report-save-bar{display:flex;align-items:center;gap:14px;padding:14px 22px;background:var(--surface);border-top:1px solid var(--border);flex-wrap:wrap;}
 .unsaved-note{font-size:12px;color:#d97706;font-weight:600;display:none;}
 .unsaved-note.show{display:block;}
+
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVE — full screen fit
+   ════════════════════════════════════════ */
+
+/* Base mobile (≤480px — phones) */
+@media(max-width:480px){
+  /* Header */
+  .header-top{padding:10px 12px;gap:8px;}
+  .logo-emblem{width:36px;height:36px;font-size:11px;}
+  .title-block h1{font-size:12px;letter-spacing:1px;}
+  .title-block span{display:none;}
+  .header-badge span:last-child{display:none;} /* hide "40 Participants" text, keep dot */
+  .admin-btn{padding:4px 9px;font-size:10px;}
+  #sheetStatusBadge{display:none!important;}
+
+  /* Nav */
+  nav{padding:0 6px;}
+  .nav-btn{padding:10px 10px;font-size:11px;}
+  .nav-btn::after{left:10px;right:10px;}
+
+  /* Main */
+  main{padding:14px 10px 70px;}
+
+  /* Hero */
+  .hero-banner{padding:20px 16px;flex-direction:column;gap:14px;}
+  .hero-text h2{font-size:20px;}
+  .hero-text p{font-size:12px;}
+  .hero-stats{gap:16px;justify-content:center;}
+  .hs-item .hs-num{font-size:24px;}
+  .hs-item .hs-label{font-size:9px;}
+
+  /* Stat cards */
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat-card .value{font-size:26px;}
+
+  /* Donut charts */
+  .donut-row{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .donut-wrap{width:80px;height:80px;}
+  .donut-wrap canvas{width:80px!important;height:80px!important;}
+  .donut-center{font-size:13px;}
+  .donut-label{font-size:10px;min-height:24px;}
+
+  /* Charts */
+  .charts-row{grid-template-columns:1fr;}
+  .chart-wrap{height:180px;}
+
+  /* Section headers */
+  .section-header h2{font-size:18px;}
+
+  /* Subtab bars */
+  .subtab-bar{gap:5px;}
+  .subtab-btn{padding:7px 10px;font-size:11px;}
+
+  /* News */
+  .news-grid{grid-template-columns:1fr;}
+  .news-card-img{height:90px;}
+
+  /* Presentations */
+  .presentations-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .topic-card{padding:16px 10px;}
+  .topic-icon{width:44px;height:44px;font-size:20px;}
+
+  /* Assessment forms */
+  .assessment-forms-grid{grid-template-columns:1fr;}
+  .aform-header{flex-direction:column;gap:8px;align-items:flex-start;}
+
+  /* Participant lookup */
+  .lookup-card{padding:20px 14px;}
+  .lookup-icon-wrap{width:56px;height:56px;font-size:24px;}
+  .lookup-card h3{font-size:17px;}
+  .lookup-input-row{flex-direction:column;}
+  .lookup-input-row input{font-size:14px;}
+  .result-header{padding:14px 16px;}
+  .result-avatar{width:40px;height:40px;font-size:15px;}
+  .result-name-block h4{font-size:15px;}
+  .result-row{padding:10px 14px;gap:8px;}
+  .rr-icon{width:22px;font-size:14px;}
+  .rr-label{width:100%;font-size:10px;}
+  .rr-value{font-size:12px;}
+  .daily-report-grid{grid-template-columns:repeat(2,1fr);padding:12px 14px 16px;gap:8px;}
+
+  /* Facilitator tab */
+  .fac-locked{padding:40px 16px;}
+  .fac-locked-icon{font-size:44px;}
+  .fac-locked h3{font-size:18px;}
+  .fac-stats-row{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .fac-stat .fs-val{font-size:22px;}
+
+  /* Score / report tables */
+  .score-table-header{flex-direction:column;gap:10px;padding:14px;}
+  .score-table-search{flex-direction:column;width:100%;gap:6px;}
+  .score-table-search input{width:100%;}
+  .score-table th,.score-table td{padding:7px 8px;font-size:10px;}
+  .report-table th,.report-table td{padding:7px 6px;font-size:10px;}
+  .day-tick{width:24px;height:24px;font-size:12px;}
+
+  /* Admin drawer */
+  .admin-drawer-inner{padding:14px;}
+  .admin-tabs-row{gap:4px;}
+  .adm-tab{padding:6px 9px;font-size:10px;}
+  .adm-grid{grid-template-columns:1fr;}
+  .adm-list-item{padding:12px;}
+  .adm-topic-row{grid-template-columns:1fr;}
+
+  /* Modals */
+  .modal-box,.fac-modal-box{padding:24px 18px;}
+  .modal-lock,.fac-modal-box .modal-lock{font-size:36px;}
+
+  /* Others tab */
+  .announcement-item{flex-direction:column;gap:8px;}
+  .quiz-grid{grid-template-columns:1fr;}
+  .event-item{flex-direction:column;gap:10px;}
+  .event-date-block{align-self:flex-start;}
+
+  /* Outline */
+  .outline-timeline{padding-left:22px;}
+  .outline-item{padding:13px 14px;}
+  .outline-item::before{left:-18px;width:10px;height:10px;}
+}
+
+/* Tablet / large phone (481–640px) */
+@media(min-width:481px) and (max-width:640px){
+  .header-top{padding:11px 16px;}
+  main{padding:16px 14px 60px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .donut-row{grid-template-columns:repeat(3,1fr);}
+  .presentations-grid{grid-template-columns:repeat(2,1fr);}
+  .assessment-forms-grid{grid-template-columns:1fr;}
+  .lookup-input-row{flex-direction:column;}
+  .rr-label{width:140px;}
+  .score-table-header{flex-direction:column;gap:10px;}
+  .score-table-search{width:100%;}
+  .score-table-search input{flex:1;}
+  .news-grid{grid-template-columns:1fr;}
+  .fac-stats-row{grid-template-columns:repeat(3,1fr);}
+  .adm-grid{grid-template-columns:1fr;}
+  .daily-report-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+/* Ensure tables scroll horizontally on mobile */
+.score-table-wrap>div,
+.score-table-wrap>[style*="overflow"],
+#scoreTableContainer>div,
+#admReportTableContainer>div,
+#reportTableContainer>div{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* Prevent content overflow on all screen sizes */
+*{max-width:100%;box-sizing:border-box;}
+img{max-width:100%;height:auto;}
+pre{white-space:pre-wrap;word-break:break-word;}
+
+/* Bottom nav safe area for iOS */
+@supports(padding-bottom:env(safe-area-inset-bottom)){
+  main{padding-bottom:calc(60px + env(safe-area-inset-bottom));}
+}
 </style>
 </head>
 <body>
@@ -438,6 +597,7 @@ main{max-width:1280px;margin:0 auto;padding:24px 18px 60px;}
     </div>
     <div class="header-right">
       <div class="header-badge"><span class="badge-dot"></span><span>40 Participants</span></div>
+      <div class="header-badge" id="sheetStatusBadge" style="display:none;"></div>
       <button class="admin-btn" id="adminToggleBtn" onclick="handleAdminClick()">⚙️ Admin</button>
     </div>
   </div>
@@ -460,13 +620,14 @@ main{max-width:1280px;margin:0 auto;padding:24px 18px 60px;}
         <button class="adm-tab" onclick="switchAdmTab('announcements',this)">📢 Announcements</button>
         <button class="adm-tab" onclick="switchAdmTab('events',this)">📅 Events</button>
         <button class="adm-tab" onclick="switchAdmTab('quizzes',this)">🧠 Quizzes</button>
+        <button class="adm-tab" onclick="switchAdmTab('dailyreports',this)">📋 Daily Reports</button>
         <button class="adm-tab" onclick="switchAdmTab('setup',this)">🔧 Setup Guide</button>
       </div>
 
       <!-- INTEGRATIONS -->
       <div id="adm-integrations" class="adm-section active">
         <div class="adm-grid">
-          <div class="adm-field"><label>Google Sheets Web App URL (Apps Script)</label><input type="url" id="cfg-sheet-url" placeholder="https://script.google.com/macros/s/AKfycbysOZ6luAzna--LEhgMXTEYkXP71UJZRNYTYEkntw7xKMv1dC0Y1D-d831r4KUDgLn_gw/exec"></div>
+          <div class="adm-field"><label>Google Sheets Web App URL (Apps Script)</label><input type="url" id="cfg-sheet-url" placeholder="https://script.google.com/macros/s/.../exec"></div>
           <div class="adm-field"><label>Self Pre-Assessment Google Form</label><input type="url" id="cfg-form-self-pre" placeholder="https://forms.gle/..."></div>
           <div class="adm-field"><label>Facilitator Pre-Assessment Google Form</label><input type="url" id="cfg-form-fac-pre" placeholder="https://forms.gle/..."></div>
           <div class="adm-field"><label>Self Post-Assessment Google Form</label><input type="url" id="cfg-form-self-post" placeholder="https://forms.gle/..."></div>
@@ -474,7 +635,7 @@ main{max-width:1280px;margin:0 auto;padding:24px 18px 60px;}
           <div class="adm-field"><label>End of Training Exam Google Form</label><input type="url" id="cfg-form-exam" placeholder="https://forms.gle/..."></div>
         </div>
         <div class="adm-row-actions"><button class="adm-save-btn" onclick="saveIntegrations()">💾 Save Integration Settings</button></div>
-        <p class="adm-note">All settings save to your browser's local storage. Complete the Setup Guide tab first if this is your first time connecting.</p>
+        <p class="adm-note">⚠️ <strong style="color:rgba(255,255,255,.6);">Deployment note:</strong> Settings saved here are stored on THIS device only. For ALL users on the live URL to see live data, paste your URLs into the HARDCODED_CONFIG block near the top of the &lt;script&gt; in the HTML file, then re-upload to GitHub/Netlify. This panel is for local testing and per-device overrides.</p>
       </div>
 
       <!-- PRESENTATIONS -->
@@ -529,6 +690,34 @@ main{max-width:1280px;margin:0 auto;padding:24px 18px 60px;}
         </div>
       </div>
 
+      <!-- DAILY REPORTS (Admin only — interactive ticking) -->
+      <div id="adm-dailyreports" class="adm-section">
+        <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:10px;padding:14px 18px;margin-bottom:16px;max-width:700px;">
+          <p style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;">
+            <strong style="color:#86efac;">📋 Admin-only:</strong> Click the circles to toggle submission status for each participant per day. Click <strong style="color:#86efac;">💾 Save to Sheet</strong> to write changes to Google Sheets. Facilitators can view this table but cannot edit it.
+          </p>
+        </div>
+        <div class="score-table-wrap">
+          <div class="score-table-header">
+            <div>
+              <h3>Daily Report Submission — Day 2 to Day 9</h3>
+              <p>Click a circle to toggle · 🟢 Submitted · 🔴 Not Submitted</p>
+            </div>
+            <div class="score-table-search">
+              <input type="text" id="admReportSearch" placeholder="🔍 Search name…" oninput="filterAdmReportTable()">
+              <button class="btn-primary" onclick="saveReportToSheet()" style="padding:7px 14px;font-size:12px;background:linear-gradient(135deg,#16a34a,#15803d);box-shadow:0 3px 10px rgba(22,163,74,.3);">💾 Save to Sheet</button>
+            </div>
+          </div>
+          <div id="admReportTableContainer">
+            <div class="score-table-loading"><span class="spinner"></span> Loading — open this tab after the sheet connects…</div>
+          </div>
+          <div class="report-save-bar">
+            <span class="unsaved-note" id="admUnsavedNote">⚠️ You have unsaved changes</span>
+            <span style="font-size:11px;color:var(--slate-light);">Last saved: <span id="admLastSaved">—</span></span>
+          </div>
+        </div>
+      </div>
+
       <!-- SETUP GUIDE -->
       <div id="adm-setup" class="adm-section">
         <div style="max-width:820px;">
@@ -546,103 +735,232 @@ main{max-width:1280px;margin:0 auto;padding:24px 18px 60px;}
           <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:22px;">
             <h4 style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--gold);margin-bottom:14px;">📝 Apps Script Code — Copy &amp; Paste into Extensions → Apps Script</h4>
             <div style="background:#0d1117;border-radius:10px;padding:18px;overflow-x:auto;">
-<pre style="color:#e6edf3;font-size:11px;line-height:1.7;font-family:monospace;white-space:pre-wrap;">function doGet(e) {
-  var sheet   = SpreadsheetApp.getActiveSpreadsheet()
-                .getSheetByName("Participants");
-  var data    = sheet.getDataRange().getValues();
-  var headers = data[0];
-  var tel     = e.parameter.tel;
-  var all     = e.parameter.all;
+<pre style="color:#e6edf3;font-size:11px;line-height:1.7;font-family:monospace;white-space:pre-wrap;">// ═══════════════════════════════════════════════════
+//  KOFIH TRAINING PORTAL — Apps Script v11 (Final)
+//  Paste this ENTIRE file into Extensions → Apps Script
+//  Deploy → New Deployment → Web App
+//  Execute as: Me  |  Who has access: Anyone
+//  ─────────────────────────────────────────────────
+//  Fixes in v11:
+//  • ?init=1  → returns stats + content in ONE request
+//    (halves sheet reads vs two separate fetches)
+//  • LockService prevents concurrent write corruption
+//  • CacheService caches stats for 60s (saves quota)
+//  • logError() auto-creates ErrorLog tab on first error
+//  • doGet guard prevents crash when Run clicked manually
+//  • Batch cell writes in saveReports (faster, safer)
+// ═══════════════════════════════════════════════════
 
-  if (tel) {
-    // Return single participant by telephone (Participant tab lookup)
-    for (var i = 1; i &lt; data.length; i++) {
-      if (String(data[i][0]).trim() === String(tel).trim()) {
-        var row = {};
-        headers.forEach(function(h, idx) { row[h] = data[i][idx]; });
-        return out({ status: "ok", participant: row });
-      }
-    }
-    return out({ status: "not_found" });
+var PARTICIPANTS_SHEET = "Participants";
+var CONTENT_SHEET      = "PortalContent";
+var LOG_SHEET          = "ErrorLog";
+var CACHE_KEY_STATS    = "kofih_stats_v11";
+var CACHE_TTL          = 60; // seconds
+
+// ── doGet ─────────────────────────────────────────
+function doGet(e) {
+  // Guard: manual Run click in editor has no request object
+  if (!e || !e.parameter) {
+    return out({ status:"error",
+      message:"No request. Open the deployed Web App URL in a browser instead." });
   }
 
-  // Build stats + optional full list
-  // A row counts as "completed" if:
-  //   - the status column says "completed", OR
-  //   - a score value exists (not blank) in the score column
-  var stats = { total: data.length - 1,
-                selfPre: 0, facPre: 0,
-                selfPost: 0, facPost: 0, exam: 0 };
-  var participants = [];
+  var tel  = e.parameter.tel     || "";
+  var all  = e.parameter.all     || "";
+  var init = e.parameter.init    || ""; // NEW: combined stats+content request
+  var tel2 = e.parameter.content || ""; // legacy content-only param
 
+  try {
+    var ss      = SpreadsheetApp.getActiveSpreadsheet();
+    var pSheet  = ss.getSheetByName(PARTICIPANTS_SHEET);
+    if (!pSheet) return out({ status:"error", message:"'Participants' tab not found." });
+
+    // 1. Single participant lookup (Participant tab search)
+    if (tel) {
+      var data    = pSheet.getDataRange().getValues();
+      var headers = data[0];
+      for (var i = 1; i &lt; data.length; i++) {
+        if (String(data[i][0]).trim() === String(tel).trim()) {
+          var row = {};
+          headers.forEach(function(h, idx) { row[h] = data[i][idx]; });
+          return out({ status:"ok", participant: row });
+        }
+      }
+      return out({ status:"not_found" });
+    }
+
+    // 2. Combined init request: stats + content in one call (Fix 11)
+    if (init === "1") {
+      var statsObj = buildStats(pSheet, all === "1");
+      var contentObj = readPortalContent(ss);
+      var resp = { status:"ok", stats: statsObj.stats };
+      if (all === "1") resp.participants = statsObj.participants;
+      if (contentObj)  resp.content = contentObj;
+      return out(resp);
+    }
+
+    // 3. Legacy: stats only (dashboard charts, donuts)
+    var cache    = CacheService.getScriptCache();
+    var needsAll = (all === "1");
+    if (!needsAll) {
+      var cached = cache.get(CACHE_KEY_STATS);
+      if (cached) return out({ status:"ok", stats: JSON.parse(cached) });
+    }
+    var statsResult = buildStats(pSheet, needsAll);
+    if (!needsAll) cache.put(CACHE_KEY_STATS, JSON.stringify(statsResult.stats), CACHE_TTL);
+    var res2 = { status:"ok", stats: statsResult.stats };
+    if (needsAll) res2.participants = statsResult.participants;
+    return out(res2);
+
+  } catch(err) {
+    logError("doGet", err.toString(), tel || init || all);
+    return out({ status:"error", message: err.toString() });
+  }
+}
+
+// ── buildStats helper ─────────────────────────────
+function buildStats(sheet, includeParticipants) {
+  var data     = sheet.getDataRange().getValues();
+  var headers  = data[0];
+  var stats    = { total: data.length-1,
+                   selfPre:0, facPre:0, selfPost:0, facPost:0, exam:0 };
+  var people   = [];
   for (var j = 1; j &lt; data.length; j++) {
     var r = {};
-    headers.forEach(function(h, idx) { r[h] = data[j][idx]; });
-
-    // Helper: count as completed if status = "completed" OR score cell has a value
+    headers.forEach(function(h,idx){ r[h]=data[j][idx]; });
     if (isDone(r.selfPre,  r.selfPreScore))  stats.selfPre++;
     if (isDone(r.facPre,   r.facPreScore))   stats.facPre++;
     if (isDone(r.selfPost, r.selfPostScore)) stats.selfPost++;
     if (isDone(r.facPost,  r.facPostScore))  stats.facPost++;
     if (isDone(r.exam,     r.examScore))     stats.exam++;
-
-    if (all === "1") { participants.push(r); }
+    if (includeParticipants) people.push(r);
   }
-
-  if (all === "1") {
-    return out({ status: "ok", stats: stats, participants: participants });
-  }
-  return out({ status: "ok", stats: stats });
+  return { stats: stats, participants: people };
 }
 
-// Count as done if status = "completed" OR a numeric score exists
+// ── doPost ────────────────────────────────────────
+function doPost(e) {
+  if (!e || !e.postData) return out({ status:"error", message:"No post data." });
+
+  // Acquire lock — prevents concurrent writes corrupting the sheet
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(10000); // wait up to 10s
+  } catch(lockErr) {
+    return out({ status:"error",
+      message:"Server busy — another save is running. Please try again in a moment." });
+  }
+
+  try {
+    var payload = JSON.parse(e.postData.contents);
+
+    if (payload.action === "updateReports") {
+      var r = saveReports(payload.reports);
+      CacheService.getScriptCache().remove(CACHE_KEY_STATS); // bust cache
+      return r;
+    }
+    if (payload.action === "saveContent") {
+      return savePortalContent(payload.content);
+    }
+    return out({ status:"error", message:"Unknown action: " + payload.action });
+
+  } catch(err) {
+    logError("doPost", err.toString(), e.postData.contents.slice(0,100));
+    return out({ status:"error", message: err.toString() });
+  } finally {
+    lock.releaseLock(); // ALWAYS release — even on error
+  }
+}
+
+// ── saveReports ───────────────────────────────────
+function saveReports(reports) {
+  var ss      = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet   = ss.getSheetByName(PARTICIPANTS_SHEET);
+  var data    = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var colIdx  = {};
+  headers.forEach(function(h,i){ colIdx[h]=i; });
+
+  var dayKeys = ["day2Report","day3Report","day4Report","day5Report",
+                 "day6Report","day7Report","day8Report","day9Report"];
+
+  // Collect all writes first, then execute — faster than one-at-a-time
+  var writes = [];
+  reports.forEach(function(rep) {
+    var tel = String(rep.telephone).trim();
+    for (var r = 1; r &lt; data.length; r++) {
+      if (String(data[r][colIdx["telephone"]]).trim() === tel) {
+        dayKeys.forEach(function(key) {
+          if (colIdx[key] !== undefined &amp;&amp; rep[key] !== undefined) {
+            writes.push({ row: r+1, col: colIdx[key]+1, val: rep[key] });
+          }
+        });
+        break;
+      }
+    }
+  });
+  writes.forEach(function(w){ sheet.getRange(w.row, w.col).setValue(w.val); });
+  return out({ status:"ok", updated: writes.length });
+}
+
+// ── savePortalContent ─────────────────────────────
+function savePortalContent(content) {
+  var ss    = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONTENT_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(CONTENT_SHEET);
+    sheet.getRange(1,1,1,2).setValues([["key","value"]]);
+  }
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i &lt; data.length; i++) {
+    if (data[i][0] === "portalContent") {
+      sheet.getRange(i+1,2).setValue(JSON.stringify(content));
+      return out({ status:"ok" });
+    }
+  }
+  sheet.appendRow(["portalContent", JSON.stringify(content)]);
+  return out({ status:"ok" });
+}
+
+// ── readPortalContent ─────────────────────────────
+function readPortalContent(ss) {
+  var sheet = ss.getSheetByName(CONTENT_SHEET);
+  if (!sheet) return null;
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i &lt; data.length; i++) {
+    if (data[i][0] === "portalContent" &amp;&amp; data[i][1]) {
+      try { return JSON.parse(data[i][1]); } catch(e) {}
+    }
+  }
+  return null;
+}
+
+// ── logError ──────────────────────────────────────
+function logError(fn, msg, ctx) {
+  try {
+    var ss    = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(LOG_SHEET);
+    if (!sheet) {
+      sheet = ss.insertSheet(LOG_SHEET);
+      sheet.getRange(1,1,1,4).setValues([["Timestamp","Function","Error","Context"]]);
+    }
+    sheet.appendRow([new Date().toISOString(), fn, msg, String(ctx).slice(0,200)]);
+  } catch(e) { /* never crash the main flow */ }
+}
+
+// ── isDone ────────────────────────────────────────
 function isDone(status, score) {
   if (String(status).trim().toLowerCase() === "completed") return true;
-  if (score !== "" &amp;&amp; score !== null &amp;&amp; score !== undefined &amp;&amp; !isNaN(parseFloat(score))) return true;
+  if (score !== "" &amp;&amp; score !== null &amp;&amp; score !== undefined
+      &amp;&amp; !isNaN(parseFloat(score))) return true;
   return false;
 }
 
+// ── out ───────────────────────────────────────────
 function out(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
-}
-
-// doPost: receives daily report updates from the portal Facilitator tab
-function doPost(e) {
-  try {
-    var payload = JSON.parse(e.postData.contents);
-    if (payload.action !== 'updateReports') {
-      return out({ status: 'error', message: 'Unknown action' });
-    }
-    var sheet   = SpreadsheetApp.getActiveSpreadsheet()
-                  .getSheetByName("Participants");
-    var data    = sheet.getDataRange().getValues();
-    var headers = data[0];
-    var colIdx  = {};
-    headers.forEach(function(h, i) { colIdx[h] = i; });
-
-    var telCol = colIdx['telephone'];
-    var dayKeys = ['day2Report','day3Report','day4Report','day5Report',
-                   'day6Report','day7Report','day8Report','day9Report'];
-
-    payload.reports.forEach(function(rep) {
-      var tel = String(rep.telephone).trim();
-      for (var r = 1; r &lt; data.length; r++) {
-        if (String(data[r][telCol]).trim() === tel) {
-          dayKeys.forEach(function(key) {
-            if (colIdx[key] !== undefined &amp;&amp; rep[key] !== undefined) {
-              sheet.getRange(r + 1, colIdx[key] + 1).setValue(rep[key]);
-            }
-          });
-          break;
-        }
-      }
-    });
-    return out({ status: 'ok' });
-  } catch(err) {
-    return out({ status: 'error', message: err.toString() });
-  }
 }</pre>
             </div>
             <p style="font-size:11px;color:rgba(255,255,255,.35);margin-top:12px;line-height:1.6;">
@@ -866,39 +1184,32 @@ function doPost(e) {
         </div>
       </div>
 
-      <!-- Daily Report Tracking -->
+      <!-- Daily Report — VIEW ONLY for facilitators -->
       <div id="facilitators-dailyreport" class="subpage">
         <div class="section-header">
-          <h2>Self Study Daily Report Submission</h2>
-          <p>Tick each day a participant has submitted their self-study report. Changes save to browser and sync to the sheet column when you refresh.</p>
+          <h2>Self Study Daily Report — View Only</h2>
+          <p>Read-only overview of participant daily report submissions. Only admins can update statuses.</p>
           <div class="section-line"></div>
         </div>
-
-        <div style="background:rgba(30,95,168,.05);border:1px solid rgba(30,95,168,.15);border-radius:12px;padding:14px 18px;max-width:680px;margin-bottom:20px;">
-          <p style="font-size:13px;color:var(--slate);line-height:1.7;">
-            <strong style="color:var(--navy);">📋 How to use:</strong> Click the circle under each day to toggle between ✅ Submitted and ✗ Not Submitted.
-            When done, click <strong>Save to Sheet</strong> — this updates columns <code style="background:rgba(30,95,168,.08);color:var(--blue);padding:1px 5px;border-radius:4px;font-size:11px;">day2Report</code> through <code style="background:rgba(30,95,168,.08);color:var(--blue);padding:1px 5px;border-radius:4px;font-size:11px;">day9Report</code> in your Google Sheet via the Apps Script.
-            Participants can see their own daily status in the Participant tab.
+        <div style="background:rgba(244,165,34,.08);border:1px solid rgba(244,165,34,.25);border-radius:12px;padding:14px 18px;max-width:680px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:22px;">🔒</span>
+          <p style="font-size:13px;color:var(--slate);line-height:1.6;">
+            <strong style="color:var(--navy);">View only.</strong> To update submission statuses, sign in as <strong>Admin</strong> and go to <strong>⚙️ Admin → 📋 Daily Reports</strong>.
           </p>
         </div>
-
         <div class="score-table-wrap">
           <div class="score-table-header">
             <div>
-              <h3>Daily Report Tracker — Day 2 to Day 9</h3>
-              <p>Click a circle to toggle · Green = Submitted · Red = Not Submitted</p>
+              <h3>Daily Report Status — Day 2 to Day 9</h3>
+              <p>🟢 Submitted &nbsp;·&nbsp; 🔴 Not Submitted</p>
             </div>
             <div class="score-table-search">
               <input type="text" id="reportSearchInput" placeholder="🔍 Search name…" oninput="filterReportTable()">
-              <button class="btn-primary" onclick="saveReportToSheet()" style="padding:7px 14px;font-size:12px;background:linear-gradient(135deg,#16a34a,#15803d);box-shadow:0 3px 10px rgba(22,163,74,.3);">💾 Save to Sheet</button>
+              <button class="btn-primary" onclick="loadFacScores()" style="padding:7px 14px;font-size:12px;">↻ Refresh</button>
             </div>
           </div>
           <div id="reportTableContainer">
             <div class="score-table-loading"><span class="spinner"></span> Loading participant data…</div>
-          </div>
-          <div class="report-save-bar">
-            <span class="unsaved-note" id="unsavedNote">⚠️ You have unsaved changes</span>
-            <span style="font-size:11px;color:var(--slate-light);">Last saved: <span id="lastSavedTime">—</span></span>
           </div>
         </div>
       </div>
@@ -933,10 +1244,27 @@ function doPost(e) {
 // ══════════════════════════════════════════════════════
 //  CONSTANTS
 // ══════════════════════════════════════════════════════
-const ADMIN_PASSWORD = 'KOFIH2026';
+// Passwords are stored as SHA-256 hashes — never in plain text
+const ADMIN_PW_HASH = 'bae9f48de6be4f7a0d852d5807e6876fca2e3c042ae3fbfd111840182146846f';
 const CFG_KEY = 'kofih_cfg_v3';
 const CONTENT_KEY = 'kofih_content_v4';
 let adminUnlocked = false;
+
+// ══════════════════════════════════════════════════════
+//  HARDCODED GLOBAL CONFIG
+//  ▶ Admin: paste your URLs here so ALL devices see live
+//    data automatically — no per-device setup needed.
+//  ▶ These are the fallback defaults. Values saved via
+//    Admin Config panel will override these on that device.
+// ══════════════════════════════════════════════════════
+const HARDCODED_CONFIG = {
+  sheetUrl:     'https://script.google.com/macros/s/AKfycbx6oCxGn08X3K9Q-B0iFigeOehXWuVmxbZZ06k6xLIvXgm3Uxu0JSIuadKMGs4T67cicQ/exec',   // ← PASTE YOUR APPS SCRIPT WEB APP URL HERE
+  formSelfPre:  'https://docs.google.com/forms/d/e/1FAIpQLSdKllQqmwLiuimONwOyMuqYtFcPmJsbb4d0FzPat33YkXkgRg/viewform?usp=header',   // ← PASTE SELF PRE-ASSESSMENT GOOGLE FORM LINK
+  formFacPre:   'https://docs.google.com/forms/d/e/1FAIpQLScupL4ELQrh6LDxAKvNL8HllFcb7DSTpVYpqGyFjmlPUkOl0w/viewform?usp=header',   // ← PASTE FACILITATOR PRE-ASSESSMENT FORM LINK
+  formSelfPost: 'https://docs.google.com/forms/d/e/1FAIpQLSc2qOjVlxMTbntQBwYUBz0SCQsCrchBL_i7A0yb7uppIpT9gA/viewform?usp=header',   // ← PASTE SELF POST-ASSESSMENT FORM LINK
+  formFacPost:  'https://docs.google.com/forms/d/e/1FAIpQLSfNWUkmL-O336-I7EGwjpjL2ClzgRNK7-5ls3Df1SxsRACklw/viewform?usp=header',   // ← PASTE FACILITATOR POST-ASSESSMENT FORM LINK
+  formExam:     'https://docs.google.com/forms/d/e/1FAIpQLSfcsp92nqfLiI1dTw0reysxjXw0nYzL97wqZUSjQI-OsTaqxw/viewform?usp=header',   // ← PASTE FINAL EXAM FORM LINK
+};
 
 // ── Default content (editable by admin) ──
 const DEFAULT_CONTENT = {
@@ -997,16 +1325,153 @@ const DEFAULT_CONTENT = {
 // ══════════════════════════════════════════════════════
 //  STORAGE
 // ══════════════════════════════════════════════════════
-function loadCfg()  { try { return JSON.parse(localStorage.getItem(CFG_KEY))     || {}; } catch(e) { return {}; } }
+function loadCfg() {
+  // Start with hardcoded global defaults (work on every device)
+  const base = Object.assign({}, HARDCODED_CONFIG);
+  // Merge any per-device overrides saved via Admin Config panel
+  try {
+    const saved = JSON.parse(localStorage.getItem(CFG_KEY)) || {};
+    // Only override with saved value if it is non-empty
+    Object.keys(saved).forEach(k => {
+      if (saved[k] && String(saved[k]).trim() !== '') base[k] = saved[k];
+    });
+  } catch(e) {}
+  return base;
+}
+// ══════════════════════════════════════════════════════
+//  CONTENT STORAGE — Google Sheets backed, localStorage cached
+// ══════════════════════════════════════════════════════
+
+// Load from localStorage (instant, used for rendering)
 function loadContent() {
   try {
     const saved = JSON.parse(localStorage.getItem(CONTENT_KEY));
     if (!saved) return JSON.parse(JSON.stringify(DEFAULT_CONTENT));
-    // Merge: saved overrides defaults
-    return Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_CONTENT)), saved);
+    const base = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+    // Deep-merge: for arrays, merge each item's fields so new default keys are preserved
+    Object.keys(base).forEach(key => {
+      if (!saved[key]) return; // no saved value — keep default
+      if (Array.isArray(base[key]) && Array.isArray(saved[key])) {
+        const defItem = base[key][0] || {};
+        // Use saved items but ensure all default field keys exist
+        base[key] = saved[key].map(item => Object.assign({}, defItem, item));
+        // Append any extra default items not present in saved (e.g. new topics added in update)
+        if (base[key].length < DEFAULT_CONTENT[key].length) {
+          base[key] = base[key].concat(DEFAULT_CONTENT[key].slice(base[key].length));
+        }
+      } else {
+        base[key] = saved[key];
+      }
+    });
+    return base;
   } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_CONTENT)); }
 }
-function saveContent(c) { localStorage.setItem(CONTENT_KEY, JSON.stringify(c)); }
+
+// Save to localStorage immediately (so this device re-renders fast)
+// AND push to Google Sheet so all other devices see it
+function saveContent(c) {
+  localStorage.setItem(CONTENT_KEY, JSON.stringify(c));
+  pushContentToSheet(c); // async — fires and forgets
+}
+
+// Push content JSON to PortalContent sheet via Apps Script POST
+async function pushContentToSheet(c) {
+  const cfg = loadCfg();
+  if (!cfg.sheetUrl) return; // no sheet configured — skip silently
+  try {
+    const slim = JSON.parse(JSON.stringify(c));
+    if (slim.news)   slim.news.forEach(n  => { delete n.img; });
+    if (slim.events) slim.events.forEach(ev => { delete ev.img; });
+
+    const res  = await fetch(cfg.sheetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'saveContent', content: slim })
+    });
+    const data = await res.json();
+    if (data.status !== 'ok') throw new Error(data.message || 'Sheet returned an error');
+  } catch(e) {
+    console.warn('pushContentToSheet failed:', e.message);
+    // Delay slightly so it appears after the success toast
+    setTimeout(() => toast('⚠️ Saved locally — sheet sync failed. Other devices may not see this change yet.', 'warn'), 400);
+  }
+}
+
+// Combined single request: fetches both stats AND content in one round-trip
+// Replaces separate pullContentFromSheet() + loadStats() calls
+async function initFromSheet() {
+  const cfg   = loadCfg();
+  const badge = document.getElementById('sheetStatusBadge');
+
+  if (!cfg.sheetUrl) {
+    document.getElementById('stat-pre').textContent  = '—';
+    document.getElementById('stat-post').textContent = '—';
+    document.getElementById('stat-exam').textContent = '—';
+    if (badge) {
+      Object.assign(badge.style, { display:'flex', background:'rgba(239,68,68,.15)', borderColor:'rgba(239,68,68,.3)', color:'#fca5a5' });
+      badge.innerHTML = '⚠️ Sheet not connected';
+    }
+    return;
+  }
+
+  const controller = new AbortController();
+  const initTimeout = setTimeout(() => controller.abort(), 20000);
+
+  try {
+    const res  = await fetch(cfg.sheetUrl + '?init=1', { mode:'cors', signal: controller.signal });
+    clearTimeout(initTimeout);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    // ── Update stats & charts ──
+    if (data.stats) {
+      const s = data.stats;
+      TOTAL = s.total || TOTAL; // Fix 14: update TOTAL from real participant count
+      document.getElementById('stat-pre').textContent  = s.selfPre  !== undefined ? Number(s.selfPre)  : '—';
+      document.getElementById('stat-post').textContent = s.selfPost !== undefined ? Number(s.selfPost) : '—';
+      document.getElementById('stat-exam').textContent = s.exam     !== undefined ? Number(s.exam)     : '—';
+      updateCharts(s);
+    }
+
+    // ── Update content ──
+    if (data.content) {
+      const local  = loadContent();
+      const merged = Object.assign({}, data.content);
+      // Restore local images by title-match (Fix 3)
+      if (local.news && merged.news) {
+        merged.news.forEach(n => {
+          const m = (local.news||[]).find(l => l.title === n.title);
+          if (m && m.img) n.img = m.img;
+        });
+      }
+      if (local.events && merged.events) {
+        merged.events.forEach(ev => {
+          const m = (local.events||[]).find(l => l.title === ev.title);
+          if (m && m.img) ev.img = m.img;
+        });
+      }
+      localStorage.setItem(CONTENT_KEY, JSON.stringify(merged));
+      renderPresentations(); renderNews(); renderOutline();
+      renderAnnouncements(); renderEventsList(); renderQuizzes();
+    }
+
+    if (badge) {
+      Object.assign(badge.style, { display:'flex', background:'rgba(74,222,128,.12)', borderColor:'rgba(74,222,128,.3)', color:'#86efac' });
+      badge.innerHTML = '🟢 Sheet connected';
+    }
+  } catch(e) {
+    clearTimeout(initTimeout);
+    console.warn('initFromSheet error:', e.message);
+    if (badge) {
+      Object.assign(badge.style, { display:'flex', background:'rgba(239,68,68,.15)', borderColor:'rgba(239,68,68,.3)', color:'#fca5a5' });
+      badge.title    = e.message;
+      badge.innerHTML = e.name === 'AbortError' ? '⏱ Sheet timed out' : '🔴 Sheet fetch failed';
+    }
+  }
+}
+
+// Keep loadStats as a thin wrapper so chart refresh still works independently
+async function loadStats() { await initFromSheet(); }
 
 // ══════════════════════════════════════════════════════
 //  PASSWORD / AUTH
@@ -1022,9 +1487,15 @@ function handleAdminClick() {
   }
 }
 
-function checkPassword() {
+async function hashPw(pw) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPassword() {
   const val = document.getElementById('pwInput').value;
-  if (val === ADMIN_PASSWORD) {
+  const hash = await hashPw(val);
+  if (hash === ADMIN_PW_HASH) {
     adminUnlocked = true;
     document.getElementById('pwModal').classList.remove('show');
     document.getElementById('adminModeStrip').classList.add('show');
@@ -1035,7 +1506,6 @@ function checkPassword() {
     document.getElementById('pwError').textContent = '❌ Incorrect password. Please try again.';
     document.getElementById('pwInput').value = '';
     document.getElementById('pwInput').focus();
-    // shake animation
     const box = document.querySelector('.modal-box');
     box.style.animation = 'none';
     setTimeout(() => { box.style.animation = ''; }, 10);
@@ -1087,12 +1557,7 @@ function switchAdmTab(tab, btn) {
 function populateAdminDrawer() {
   const cfg = loadCfg();
   const con = loadContent();
-  // Integrations
-  ['sheet-url','form-self-pre','form-fac-pre','form-self-post','form-fac-post','form-exam'].forEach(k => {
-    const el = document.getElementById('cfg-' + k);
-    if (el && cfg[k.replace(/-/g, '_').replace('cfg_','')] !== undefined) el.value = cfg[k.replace(/-/g,'_')] || '';
-  });
-  // Map field ids to cfg keys
+  // Map integration field ids to cfg keys (direct mapping — no redundant forEach)
   setField('cfg-sheet-url',    cfg.sheetUrl);
   setField('cfg-form-self-pre', cfg.formSelfPre);
   setField('cfg-form-fac-pre',  cfg.formFacPre);
@@ -1106,6 +1571,10 @@ function populateAdminDrawer() {
   renderAdmAnnouncements(con.announcements);
   renderAdmEvents(con.events);
   renderAdmQuizzes(con.quizzes);
+  // Populate admin daily report table if participants already loaded
+  if (allParticipants && allParticipants.length > 0) {
+    renderAdmReportTable(allParticipants);
+  }
 }
 
 function setField(id, val) { const el = document.getElementById(id); if (el && val) el.value = val; }
@@ -1391,14 +1860,19 @@ function deleteItem(section, index) {
   const con = loadContent();
   con[section].splice(index, 1);
   saveContent(con);
-  const renders = { news:renderAdmNews, outline:renderAdmOutline, announcements:renderAdmAnnouncements, events:renderAdmEvents, quizzes:renderAdmQuizzes };
-  renders[section](con[section]);
+  // Refresh admin list
+  const admRenders = { news:renderAdmNews, outline:renderAdmOutline, announcements:renderAdmAnnouncements, events:renderAdmEvents, quizzes:renderAdmQuizzes };
+  if (admRenders[section]) admRenders[section](con[section]);
+  // Also refresh the public-facing view immediately
+  const pubRenders = { news:renderNews, outline:renderOutline, announcements:renderAnnouncements, events:renderEventsList, quizzes:renderQuizzes };
+  if (pubRenders[section]) pubRenders[section]();
+  toast('🗑 Item removed');
 }
 
 // ══════════════════════════════════════════════════════
 //  RENDER FUNCTIONS (public-facing)
 // ══════════════════════════════════════════════════════
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 function renderPresentations() {
   const con = loadContent();
@@ -1531,15 +2005,23 @@ async function lookupParticipant() {
   const cfg = loadCfg();
   if (!cfg.sheetUrl) { errEl.innerHTML = '⚙️ Portal not yet connected to a Google Sheet.<br><small>Ask your coordinator to complete the setup.</small>'; errEl.style.display = 'block'; return; }
   loadEl.style.display = 'block';
+  const controller = new AbortController();
+  const lookupTimeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
   try {
-    const res = await fetch(cfg.sheetUrl + '?tel=' + encodeURIComponent(tel));
+    const res = await fetch(cfg.sheetUrl + '?tel=' + encodeURIComponent(tel), { signal: controller.signal });
+    clearTimeout(lookupTimeout);
     const data = await res.json();
     loadEl.style.display = 'none';
     if (data.status === 'not_found') { errEl.textContent = '❌ No participant found with that telephone number. Please check and try again.'; errEl.style.display = 'block'; return; }
     if (data.status === 'ok' && data.participant) renderResult(data.participant);
   } catch(e) {
+    clearTimeout(lookupTimeout);
     loadEl.style.display = 'none';
-    errEl.innerHTML = '🌐 Could not connect to the training database.<br><small>Check your internet connection or contact your coordinator.</small>';
+    if (e.name === 'AbortError') {
+      errEl.innerHTML = '⏱ Request timed out. The server is taking too long — please try again.';
+    } else {
+      errEl.innerHTML = '🌐 Could not connect to the training database.<br><small>Check your internet connection or contact your coordinator.</small>';
+    }
     errEl.style.display = 'block';
   }
 }
@@ -1596,7 +2078,7 @@ function statusAndScore(status, score, total) {
 // ══════════════════════════════════════════════════════
 //  FACILITATOR PASSWORD & TAB
 // ══════════════════════════════════════════════════════
-const FAC_PASSWORD = 'FAC2026';
+const FAC_PW_HASH = 'ebde4ee984782174b9344c619cea25c39df0fc655d1e0649465473a1e93bb5b6';
 let facUnlocked = false;
 let allParticipants = []; // cached from sheet for score table
 
@@ -1623,9 +2105,10 @@ function handleFacTabContent() {
   setTimeout(() => document.getElementById('facPwInput').focus(), 100);
 }
 
-function checkFacPassword() {
+async function checkFacPassword() {
   const val = document.getElementById('facPwInput').value;
-  if (val === FAC_PASSWORD) {
+  const hash = await hashPw(val);
+  if (hash === FAC_PW_HASH) {
     facUnlocked = true;
     document.getElementById('facPwModal').classList.remove('show');
     document.getElementById('facSessionStrip').classList.add('show');
@@ -1703,7 +2186,8 @@ async function loadFacScores() {
       allParticipants = data.participants;
       updateFacStats(data.stats || {});
       renderScoreTable(allParticipants);
-      renderReportTable(allParticipants); // populate the daily report tab too
+      renderReportTable(allParticipants);    // facilitator view-only table
+      renderAdmReportTable(allParticipants); // admin interactive table
     } else if (data.status === 'ok' && data.stats) {
       // Older Apps Script — show notice to upgrade
       updateFacStats(data.stats);
@@ -1723,12 +2207,14 @@ async function loadFacScores() {
 }
 
 function updateFacStats(s) {
-  document.getElementById('fstat-total').textContent   = s.total    || 40;
-  document.getElementById('fstat-selfpre').textContent  = s.selfPre  || '—';
-  document.getElementById('fstat-selfpost').textContent = s.selfPost || '—';
-  document.getElementById('fstat-facpre').textContent   = s.facPre   || '—';
-  document.getElementById('fstat-facpost').textContent  = s.facPost  || '—';
-  document.getElementById('fstat-exam').textContent     = s.exam     || '—';
+  // Use explicit undefined check so 0 shows as 0, not '—'
+  const v = (val, fallback) => (val !== undefined && val !== null) ? val : fallback;
+  document.getElementById('fstat-total').textContent    = v(s.total,   40);
+  document.getElementById('fstat-selfpre').textContent  = v(s.selfPre,  '—');
+  document.getElementById('fstat-selfpost').textContent = v(s.selfPost, '—');
+  document.getElementById('fstat-facpre').textContent   = v(s.facPre,   '—');
+  document.getElementById('fstat-facpost').textContent  = v(s.facPost,  '—');
+  document.getElementById('fstat-exam').textContent     = v(s.exam,     '—');
 }
 
 const REPORT_DAYS = [2,3,4,5,6,7,8,9];
@@ -1817,7 +2303,8 @@ function filterScoreTable() {
 
 // In-memory state: { 'telephone': { day2: true/false, day3: ... } }
 let reportState = {};
-let reportDirty = false; // tracks unsaved changes
+let reportDirty = false;   // tracks unsaved changes
+let reportChanged = new Set(); // tracks WHICH telephone numbers changed
 
 function renderReportTable(participants) {
   if (!participants || participants.length === 0) {
@@ -1847,17 +2334,11 @@ function renderReportTable(participants) {
   const rows = participants.map((p, i) => {
     const tel = String(p.telephone || '').trim();
     const num = String(i + 1).padStart(2, '0');
+    // READ-ONLY: read directly from participant data, no onclick, no reportState dependency
     const dayCells = REPORT_DAYS.map(d => {
-      const done = reportState[tel] && reportState[tel]['day'+d];
-      return `<td>
-        <span class="day-tick ${done ? 'done' : 'undone'}"
-              data-tel="${esc(tel)}"
-              data-day="${d}"
-              onclick="toggleDayReport(this)"
-              title="${done ? 'Submitted — click to undo' : 'Not submitted — click to mark submitted'}">
-          ${done ? '✓' : '✗'}
-        </span>
-      </td>`;
+      const raw  = String(p['day'+d+'Report'] || '').trim().toLowerCase();
+      const done = raw === 'submitted';
+      return `<td><span class="day-tick ${done?'done':'undone'}" style="cursor:default;" title="Day ${d}: ${done?'Submitted':'Not Submitted'}">${done?'✓':'✗'}</span></td>`;
     }).join('');
 
     return `<tr data-rname="${esc((p.name||'').toLowerCase())}">
@@ -1890,6 +2371,7 @@ function toggleDayReport(el) {
   if (!reportState[tel]) reportState[tel] = {};
   const current = reportState[tel]['day'+day] || false;
   reportState[tel]['day'+day] = !current;
+  reportChanged.add(tel); // mark this participant as changed
 
   // Update the tick UI instantly
   if (!current) {
@@ -1904,9 +2386,12 @@ function toggleDayReport(el) {
     el.title = 'Not submitted — click to mark submitted';
   }
 
-  // Mark dirty
+  // Mark dirty — show unsaved warning in both admin and facilitator panels
   reportDirty = true;
-  document.getElementById('unsavedNote').classList.add('show');
+  ['admUnsavedNote','unsavedNote'].forEach(id => {
+    const noteEl = document.getElementById(id);
+    if (noteEl) noteEl.classList.add('show');
+  });
 }
 
 function filterReportTable() {
@@ -1919,6 +2404,64 @@ function filterReportTable() {
   });
 }
 
+// ── Admin Daily Report Table (interactive ticking) ──
+function renderAdmReportTable(participants) {
+  const container = document.getElementById('admReportTableContainer');
+  if (!container) return;
+  if (!participants || participants.length === 0) {
+    container.innerHTML = `<div class="score-table-loading">No participant data — connect the Google Sheet first.</div>`;
+    return;
+  }
+  // Seed reportState from sheet data (only fill gaps, preserve any session edits)
+  participants.forEach(p => {
+    const tel = String(p.telephone || '').trim();
+    if (!tel) return;
+    if (!reportState[tel]) reportState[tel] = {};
+    REPORT_DAYS.forEach(d => {
+      if (reportState[tel]['day'+d] === undefined) {
+        const val = String(p['day'+d+'Report'] || '').trim().toLowerCase();
+        reportState[tel]['day'+d] = (val === 'submitted');
+      }
+    });
+  });
+  const dayHeaders = REPORT_DAYS.map(d => `<th>Day&nbsp;${d}</th>`).join('');
+  const rows = participants.map((p, i) => {
+    const tel = String(p.telephone || '').trim();
+    const num = String(i + 1).padStart(2, '0');
+    const dayCells = REPORT_DAYS.map(d => {
+      const done = reportState[tel] && reportState[tel]['day'+d];
+      return `<td><span class="day-tick ${done?'done':'undone'}" data-tel="${esc(tel)}" data-day="${d}" onclick="toggleDayReport(this)" title="${done?'Submitted — click to undo':'Not submitted — click to mark'}">${done?'✓':'✗'}</span></td>`;
+    }).join('');
+    return `<tr data-admname="${esc((p.name||'').toLowerCase())}">
+      <td style="color:var(--slate-light);font-size:11px;font-weight:600;padding-left:14px;">${num}</td>
+      <td class="name-col">${esc(p.name||'—')}</td>
+      <td class="fac-col">${esc(p.facility||p.department||'—')}</td>
+      ${dayCells}
+    </tr>`;
+  }).join('');
+  container.innerHTML = `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+    <table class="report-table">
+      <thead><tr>
+        <th style="padding-left:14px;">#</th>
+        <th class="name-col">Name</th>
+        <th class="name-col">Facility</th>
+        ${dayHeaders}
+      </tr></thead>
+      <tbody id="admReportTableBody">${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function filterAdmReportTable() {
+  const q = (document.getElementById('admReportSearch').value || '').toLowerCase().trim();
+  const body = document.getElementById('admReportTableBody');
+  if (!body) return;
+  Array.from(body.querySelectorAll('tr')).forEach(row => {
+    const name = row.dataset.admname || '';
+    row.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
+}
+
 async function saveReportToSheet() {
   if (!reportDirty) { toast('No changes to save.'); return; }
   const cfg = loadCfg();
@@ -1927,18 +2470,22 @@ async function saveReportToSheet() {
     return;
   }
 
-  // Build payload — all report states
-  const payload = Object.entries(reportState).map(([tel, days]) => ({
-    telephone: tel,
-    day2Report:  days.day2  ? 'submitted' : 'not-submitted',
-    day3Report:  days.day3  ? 'submitted' : 'not-submitted',
-    day4Report:  days.day4  ? 'submitted' : 'not-submitted',
-    day5Report:  days.day5  ? 'submitted' : 'not-submitted',
-    day6Report:  days.day6  ? 'submitted' : 'not-submitted',
-    day7Report:  days.day7  ? 'submitted' : 'not-submitted',
-    day8Report:  days.day8  ? 'submitted' : 'not-submitted',
-    day9Report:  days.day9  ? 'submitted' : 'not-submitted',
-  }));
+  // Build payload — only participants with actual changes
+  const payload = Array.from(reportChanged).map(tel => {
+    const days = reportState[tel] || {};
+    return {
+      telephone: tel,
+      day2Report:  days.day2  ? 'submitted' : 'not-submitted',
+      day3Report:  days.day3  ? 'submitted' : 'not-submitted',
+      day4Report:  days.day4  ? 'submitted' : 'not-submitted',
+      day5Report:  days.day5  ? 'submitted' : 'not-submitted',
+      day6Report:  days.day6  ? 'submitted' : 'not-submitted',
+      day7Report:  days.day7  ? 'submitted' : 'not-submitted',
+      day8Report:  days.day8  ? 'submitted' : 'not-submitted',
+      day9Report:  days.day9  ? 'submitted' : 'not-submitted',
+    };
+  });
+  if (payload.length === 0) { toast('No changes to save.'); return; }
 
   try {
     // POST to Apps Script
@@ -1950,10 +2497,18 @@ async function saveReportToSheet() {
     const data = await res.json();
     if (data.status === 'ok') {
       reportDirty = false;
-      document.getElementById('unsavedNote').classList.remove('show');
+      reportChanged.clear(); // reset dirty tracking
+      // Update both admin and fac save indicators
+      ['admUnsavedNote','unsavedNote'].forEach(id => {
+        const noteEl = document.getElementById(id);
+        if (noteEl) noteEl.classList.remove('show');
+      });
       const now = new Date();
-      document.getElementById('lastSavedTime').textContent =
-        now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      ['admLastSaved','lastSavedTime'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = timeStr;
+      });
       toast('✅ Daily report statuses saved to Google Sheet!');
     } else {
       toast('❌ Save failed: ' + (data.message || 'Unknown error'));
@@ -1966,31 +2521,7 @@ async function saveReportToSheet() {
 }
 
 
-async function loadStats() {
-  const cfg = loadCfg();
-  if (!cfg.sheetUrl) {
-    // No sheet connected — charts stay at 0, show a note
-    document.getElementById('stat-pre').textContent  = '—';
-    document.getElementById('stat-post').textContent = '—';
-    document.getElementById('stat-exam').textContent = '—';
-    return;
-  }
-  try {
-    const res  = await fetch(cfg.sheetUrl);
-    const data = await res.json();
-    if (data.status === 'ok' && data.stats) {
-      const s = data.stats;
-      // Stat cards — show 0 explicitly when nothing completed (not '—')
-      document.getElementById('stat-pre').textContent  = Number(s.selfPre)  || 0;
-      document.getElementById('stat-post').textContent = Number(s.selfPost) || 0;
-      document.getElementById('stat-exam').textContent = Number(s.exam)     || 0;
-      updateCharts(s);
-    }
-  } catch(e) {
-    // Silently keep charts at 0 — CORS or network issue
-    console.warn('loadStats fetch error:', e.message);
-  }
-}
+
 
 // ══════════════════════════════════════════════════════
 //  NAV
@@ -2012,19 +2543,24 @@ function switchSubtab(parent, sub, btn) {
 // ══════════════════════════════════════════════════════
 //  TOAST
 // ══════════════════════════════════════════════════════
-function toast(msg) {
+function toast(msg, type) {
+  // Remove any existing toast first — no stacking
+  const existing = document.getElementById('kofih-toast');
+  if (existing) existing.remove();
+  const bg = { warn:'#d97706', error:'#dc2626', success:'#1E5FA8' }[type] || '#1E5FA8';
   const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1E5FA8;color:white;padding:12px 20px;border-radius:10px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(10,22,40,.3);animation:fadeUp .3s ease;';
+  t.id = 'kofih-toast';
+  t.style.cssText = `position:fixed;bottom:24px;right:24px;background:${bg};color:white;padding:12px 20px;border-radius:10px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(10,22,40,.3);animation:fadeUp .3s ease;max-width:min(320px,90vw);line-height:1.4;`;
   t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+  setTimeout(() => { if (t.parentNode) t.remove(); }, 4000);
 }
 
 // ══════════════════════════════════════════════════════
 //  CHARTS
 // ══════════════════════════════════════════════════════
 let charts = {};
-const TOTAL = 40;
+let TOTAL = 40; // updated from sheet on load — do not hardcode
 
 // Colours per assessment
 const DONUT_COLORS = {
@@ -2092,6 +2628,7 @@ function updateCharts(s) {
 //  INIT
 // ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+  // Render from localStorage immediately (instant for all devices)
   renderPresentations();
   renderNews();
   renderOutline();
@@ -2099,6 +2636,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderEventsList();
   renderQuizzes();
   renderAssessmentForms();
+
+  // Single combined request: stats + content in one round-trip (Fix 11)
+  // Called after charts init so updateCharts() is available
 
   // Init all charts with 0 / empty — real data loaded from sheet after
   charts.d_selfPre  = makeDonut('donut-selfPre',  'selfPre',  0);
@@ -2119,8 +2659,8 @@ document.addEventListener('DOMContentLoaded', () => {
                x:{ticks:{font:{size:10}},grid:{display:false}} } }
   });
 
-  // Load real data from sheet AFTER charts are initialised
-  loadStats();
+  // Single initFromSheet() fetches stats + content in one request
+  initFromSheet();
 });
 </script>
 </body>
